@@ -154,7 +154,7 @@ define(['dom', 'browser', 'scrollManager'], function (dom, browser, scrollManage
         }
 
         // out of view
-        if (viewport !== false && (elementRect.right < 0 || elementRect.bottom < 0 || elementRect.right >= window.innerWidth || elementRect.top >= window.innerHeight)) {
+        if (viewport !== false && (elementRect.right < 0 || elementRect.bottom < 0 || elementRect.left >= window.innerWidth || elementRect.top >= window.innerHeight)) {
              return false;
         }
 
@@ -343,7 +343,7 @@ define(['dom', 'browser', 'scrollManager'], function (dom, browser, scrollManage
             }
 
             // out of view
-            if (elementRect.right < 0 || elementRect.bottom < 0 || elementRect.right >= window.innerWidth || elementRect.top >= window.innerHeight) {
+            if (elementRect.right < 0 || elementRect.bottom < 0 || elementRect.left >= window.innerWidth || elementRect.top >= window.innerHeight) {
                 continue;
             }
 
