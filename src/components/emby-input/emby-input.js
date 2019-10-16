@@ -90,6 +90,74 @@ define(['layoutManager', 'browser', 'dom', 'css!./emby-input', 'registerElement'
             }
         }
 
+        // Prevent editing until clicked or Return pressed (to block on-screen keyboard)
+        // FIXME: Doesn't work in Tizen browser due to Back button handled by the browser itself (actually not needed while keyboard is in use)
+        // FIXME: Doesn't work in webOS due to Back button handled by webOS itself
+        if (layoutManager.tv && browser.tizen && window.appMode !== undefined) {
+            var unlock = function(input) {
+                if (input.readOnly && !input.readOnlyInitial) {
+                    input.readOnly = false;
+
+                    // Fire empty keydown event to force webOS to show cursor
+                    if (browser.web0s) {
+                        var event = new KeyboardEvent('keydown');
+                        input.dispatchEvent(event);
+                    }
+                }
+
+                return !input.readOnly;
+            }
+
+            this.addEventListener('click', function() {
+                unlock(this);
+            });
+
+            this.addEventListener('focus', function() {
+                this.readOnlyInitial = this.readOnly || false;
+                this.readOnly = true;
+            });
+
+            this.addEventListener('blur', function() {
+                this.readOnly = this.readOnlyInitial || false;
+            });
+
+            this.addEventListener('keydown', function(e) {
+                switch (e.key) {
+                case '':
+                case 'Unidentified': // webOS emulator generates keydown event with 'Unidentified' after cursor move
+                    break;
+
+                case 'Enter':
+                    if (this.readOnly) {
+                        unlock(this);
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    break;
+
+                case 'Escape':
+                case 'XF86Back': // Tizen Remote Control's Back
+                    if (!this.readOnly) {
+                        this.readOnly = true;
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    break;
+
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    if (!this.readOnly) {
+                        e.stopPropagation();
+                    }
+                    break;
+
+                default:
+                    unlock(this);
+                }
+            });
+        }
     };
 
     function onChange() {
