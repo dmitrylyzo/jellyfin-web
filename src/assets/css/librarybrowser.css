@@ -636,18 +636,24 @@
     box-shadow: 0 0.1em 0.5em 0 rgba(0, 0, 0, 0.75);
 }
 
-div.itemDetailGalleryLink.defaultCardBackground {
-    text-align: center;
+/* strict selector to override emby-button */
+a.itemDetailGalleryLink,
+div.itemDetailGalleryLink {
+    display: flex;
+    margin: 0;
+    padding: 0;
 }
 
-.itemDetailGalleryLink.defaultCardBackground {
-    height: 23vw; /* Dirty hack to get it to look somewhat square. Less than ideal. */
+/* square card */
+.itemDetailGalleryLink.defaultCardBackground::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
 }
 
 .itemDetailGalleryLink.defaultCardBackground > .material-icons {
     font-size: 15vw;
-    margin-top: 50%;
-    transform: translateY(-50%);
+    margin: auto;
 }
 
 @media all and (max-width: 62.5em) {
