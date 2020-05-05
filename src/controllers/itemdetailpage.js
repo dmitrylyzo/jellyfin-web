@@ -805,9 +805,11 @@ define(['loading', 'appRouter', 'layoutManager', 'connectionManager', 'userSetti
         if (editable && url === undefined) {
             html += "<a class='itemDetailGalleryLink itemDetailImage defaultCardBackground defaultCardBackground"+ cardBuilder.getDefaultBackgroundClass(item.Name) + "' is='emby-linkbutton' href='#'>";
         } else if (!editable && url === undefined) {
-            html += "<div class='itemDetailGalleryLink itemDetailImage defaultCardBackground defaultCardBackground"+ cardBuilder.getDefaultBackgroundClass(item.Name) + "' is='emby-linkbutton' href='#'>";
+            html += "<div class='itemDetailGalleryLink itemDetailImage defaultCardBackground defaultCardBackground"+ cardBuilder.getDefaultBackgroundClass(item.Name) + " emby-button'>";
         } else if (editable) {
             html += "<a class='itemDetailGalleryLink' is='emby-linkbutton' href='#'>";
+        } else {
+            html += '<div class="itemDetailGalleryLink itemDetailImage emby-button">';
         }
 
         if (url) {
@@ -818,12 +820,6 @@ define(['loading', 'appRouter', 'layoutManager', 'connectionManager', 'userSetti
             html += cardBuilder.getDefaultText(item);
         }
 
-        if (editable) {
-            html += '</a>';
-        } else if (!editable && url === undefined) {
-            html += '</div>';
-        }
-
         var progressHtml = item.IsFolder || !item.UserData ? '' : indicators.getProgressBarHtml(item);
         html += '<div class="detailImageProgressContainer">';
 
@@ -832,6 +828,13 @@ define(['loading', 'appRouter', 'layoutManager', 'connectionManager', 'userSetti
         }
 
         html += '</div>';
+
+        if (editable) {
+            html += '</a>';
+        } else {
+            html += '</div>';
+        }
+
         elem.innerHTML = html;
 
         if (detectRatio && item.PrimaryImageAspectRatio) {
