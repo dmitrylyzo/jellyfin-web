@@ -1427,7 +1427,7 @@ import 'programStyles';
                 cardImageContainerOpen += getDefaultText(item, options);
             }
 
-            const tagName = (layoutManager.tv) && !overlayButtons ? 'button' : 'div';
+            const tagName = (layoutManager.tv) && !overlayButtons && action !== 'none' ? 'button' : 'div';
 
             const nameWithPrefix = (item.SortName || item.Name || '');
             let prefix = nameWithPrefix.substring(0, Math.min(3, nameWithPrefix.length));
