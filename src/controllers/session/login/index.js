@@ -116,7 +116,6 @@ import './login.scss';
     }
 
     function showManualForm(context, showCancel, focusPassword) {
-        context.querySelector('.chkRememberLogin').checked = appSettings.enableAutoLogin();
         context.querySelector('.manualLoginForm').classList.remove('hide');
         context.querySelector('.visualLoginForm').classList.add('hide');
         context.querySelector('.btnManual').classList.add('hide');
@@ -207,6 +206,9 @@ import './login.scss';
         }
 
         view.querySelector('#divUsers').addEventListener('click', function (e) {
+            // Prevent auto login if logged in via visual form
+            appSettings.enableAutoLogin(false);
+
             const card = dom.parentWithClass(e.target, 'card');
             const cardContent = card ? card.querySelector('.cardContent') : null;
 
