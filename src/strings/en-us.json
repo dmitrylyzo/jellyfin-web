@@ -1504,5 +1504,8 @@
     "MessagePlaybackError": "There was an error playing this file on your Google Cast receiver.",
     "EnableEnhancedNvdecDecoder": "Enable enhanced NVDEC decoder",
     "EnableVppTonemapping": "Enable VPP Tone mapping",
-    "AllowVppTonemappingHelp": "Full hardware based tone mapping without using OpenCL filter. Currently works only when transcoding videos with embedded HDR10 metadata."
+    "AllowVppTonemappingHelp": "Full hardware based tone mapping without using OpenCL filter. Currently works only when transcoding videos with embedded HDR10 metadata.",
+    "DevMode": "Developer Mode",
+    "UserAgent": "UserAgent: {0}",
+    "LabelShowLog": "Show Log"
 }
