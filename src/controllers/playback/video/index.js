@@ -1,5 +1,6 @@
 import { playbackManager } from '../../../components/playback/playbackmanager';
 import SyncPlay from '../../../components/syncPlay/core';
+import browser from '../../../scripts/browser';
 import dom from '../../../scripts/dom';
 import inputManager from '../../../scripts/inputManager';
 import mouseManager from '../../../scripts/mouseManager';
@@ -981,23 +982,34 @@ import { appRouter } from '../../../components/appRouter';
             }
         }
 
-        /**
-         * Clicked element.
-         * To skip 'click' handling on Firefox/Edge.
-         */
-        let clickedElement;
+        function onIgnoredClick(e) {
+            dom.removeEventListener(document, 'click', onIgnoredClick, { capture: true });
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+
+        function ignoreNextClick(e, force) {
+            // Firefox/Edge emits `click` even if `preventDefault` was used on `keydown`
+            // https://bugzilla.mozilla.org/show_bug.cgi?id=1487102
+            if ((browser.firefox || browser.edge) && (e.target.tagName === 'BUTTON' || force)) {
+                dom.addEventListener(document, 'click', onIgnoredClick, { capture: true });
+            }
+        }
 
         function onKeyDown(e) {
-            clickedElement = e.target;
-
             const key = keyboardnavigation.getKeyName(e);
             const isKeyModified = e.ctrlKey || e.altKey || e.metaKey;
-            const currentElement = document.activeElement;
 
             if (e.keyCode === 32) {
-                if (!currentElement.className.split(' ').includes('btnPause')) {
-                    // If the focused button is the pause button it will already play/pause it
+                // Remove the previous listener to make Firefox work like Chrome on repeated keydowns
+                dom.removeEventListener(document, 'click', onIgnoredClick, { capture: true });
+
+                if (e.target.tagName !== 'BUTTON' || !layoutManager.tv) {
                     playbackManager.playPause(currentPlayer);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    ignoreNextClick(e, !currentVisibleMenu);
                 }
                 showOsd();
                 return;
@@ -1126,7 +1138,6 @@ import { appRouter } from '../../../components/appRouter';
         }
 
         function onWindowMouseDown(e) {
-            clickedElement = e.target;
             mouseIsDown = true;
             resetIdle();
         }
@@ -1137,7 +1148,6 @@ import { appRouter } from '../../../components/appRouter';
         }
 
         function onWindowTouchStart(e) {
-            clickedElement = e.target;
             mouseIsDown = true;
             resetIdle();
         }
@@ -1495,10 +1505,7 @@ import { appRouter } from '../../../components/appRouter';
             playbackManager.previousTrack(currentPlayer);
         });
         view.querySelector('.btnPause').addEventListener('click', function () {
-            // Ignore 'click' if another element was originally clicked (Firefox/Edge issue)
-            if (this.contains(clickedElement)) {
-                playbackManager.playPause(currentPlayer);
-            }
+            playbackManager.playPause(currentPlayer);
         });
         view.querySelector('.btnNextTrack').addEventListener('click', function () {
             playbackManager.nextTrack(currentPlayer);
