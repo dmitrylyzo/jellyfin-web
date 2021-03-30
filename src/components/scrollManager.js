@@ -201,6 +201,19 @@ import layoutManager from './layoutManager';
      */
     const documentScroller = new DocumentScroller();
 
+    const scrollerHints = {
+        x: {
+            nameScroll: 'scrollWidth',
+            nameClient: 'clientWidth',
+            nameStyle: 'overflowX'
+        },
+        y: {
+            nameScroll: 'scrollHeight',
+            nameClient: 'clientHeight',
+            nameStyle: 'overflowY'
+        }
+    };
+
     /**
      * Returns parent element that can be scrolled. If no such, returns document scroller.
      *
@@ -210,23 +223,25 @@ import layoutManager from './layoutManager';
      */
     function getScrollableParent(element, vertical) {
         if (element) {
-            let nameScroll = 'scrollWidth';
-            let nameClient = 'clientWidth';
-            let nameClass = 'scrollX';
-
-            if (vertical) {
-                nameScroll = 'scrollHeight';
-                nameClient = 'clientHeight';
-                nameClass = 'scrollY';
-            }
+            const scrollerHint = vertical ? scrollerHints.y : scrollerHints.x;
 
             let parent = element.parentElement;
 
-            while (parent) {
+            while (parent && parent !== document.body) {
                 // Skip 'emby-scroller' because it scrolls by itself
-                if (!parent.classList.contains('emby-scroller') &&
-                    parent[nameScroll] > parent[nameClient] && parent.classList.contains(nameClass)) {
-                    return parent;
+                if (!parent.classList.contains('emby-scroller')) {
+                    const styles = window.getComputedStyle(parent);
+
+                    // Stop on fixed parent
+                    if (styles.position === 'fixed') {
+                        return parent;
+                    }
+
+                    const overflow = styles[scrollerHint.nameStyle];
+
+                    if (overflow === 'scroll' || overflow === 'auto' && parent[scrollerHint.nameScroll] > parent[scrollerHint.nameClient]) {
+                        return parent;
+                    }
                 }
 
                 parent = parent.parentElement;
