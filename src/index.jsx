@@ -46,6 +46,8 @@ import './styles/dashboard.scss';
 import './styles/detailtable.scss';
 import './styles/librarybrowser.scss';
 
+import 'components/devtools/devtools';
+
 async function init() {
     // Log current version to console to help out with issue triage and debugging
     console.info(
