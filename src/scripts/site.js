@@ -37,6 +37,7 @@ import SyncPlayToasts from '../components/syncPlay/ui/syncPlayToasts';
 import SyncPlayNoActivePlayer from '../components/syncPlay/ui/players/NoActivePlayer';
 import SyncPlayHtmlVideoPlayer from '../components/syncPlay/ui/players/HtmlVideoPlayer';
 import SyncPlayHtmlAudioPlayer from '../components/syncPlay/ui/players/HtmlAudioPlayer';
+import '../components/devtools/devtools';
 
 // TODO: Move this elsewhere
 window.getWindowLocationSearch = function(win) {

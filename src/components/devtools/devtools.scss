@@ -1,0 +1,50 @@
+.devtools-console-container {
+    position: fixed;
+    right: 5em;
+    bottom: 5em;
+    width: 50%;
+    height: 50%;
+    opacity: 0.5;
+    z-index: 1000000;
+    background: #fff;
+    border: solid 2px gray;
+    overflow: auto;
+}
+
+.devtools-console-container:hover {
+    opacity: 0.9;
+}
+
+.devtools-console span {
+    display: block;
+}
+
+.devtools-console .debug {
+    color: black;
+}
+
+.devtools-console .dir {
+    color: black;
+}
+
+.devtools-console .error {
+    color: red;
+    background-color: #fff0f0;
+    border-top: solid 1px #ffd6d6;
+    border-bottom: solid 1px #ffd6d6;
+}
+
+.devtools-console .info {
+    color: black;
+}
+
+.devtools-console .log {
+    color: black;
+}
+
+.devtools-console .warn {
+    color: saddlebrown;
+    background-color: #fffbe5;
+    border-top: solid 1px #fff5c2;
+    border-bottom: solid 1px #fff5c2;
+}
