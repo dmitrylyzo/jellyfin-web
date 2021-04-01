@@ -25,7 +25,7 @@ function stopScrollDown() {
     interval = null;
 }
 
-if (appSettings.devmodeShowLog()) {
+if (appSettings.devtoolsShowLog()) {
     import('consolejs').then(() => {
         document.body.insertAdjacentHTML('beforeend', template);
 
