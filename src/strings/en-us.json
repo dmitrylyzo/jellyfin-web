@@ -1737,8 +1737,10 @@
     "LabelExtractTrickplayDuringLibraryScan": "Extract trickplay images during the library scan",
     "LabelExtractTrickplayDuringLibraryScanHelp": "Generate trickplay images when videos are imported during the library scan. Otherwise, they will be extracted during the trickplay images scheduled task. If generation is set to non-blocking this will not affect the time a library scan takes to complete.",
     "DevTools": "Developer Tools",
-    "DevToolsUserAgent": "UserAgent: {0}",
-    "DevToolsPlatform": "Platform: {0}",
     "DevToolsAppVersion": "AppVersion: {0}",
-    "LabelShowLog": "Show Log"
+    "DevToolsLogSize": "Log size",
+    "DevToolsShowLog": "Show log",
+    "DevToolsPlatform": "Platform: {0}",
+    "DevToolsUserAgent": "UserAgent: {0}",
+    "HeaderDevToolsLog": "Log"
 }

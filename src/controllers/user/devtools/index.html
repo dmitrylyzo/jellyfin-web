@@ -12,11 +12,21 @@
                     <p class="appVersion"></p>
                 </div>
 
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" class="chkShowLog" />
-                        <span>${LabelShowLog}</span>
-                    </label>
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">
+                        ${HeaderDevToolsLog}
+                    </h2>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input type="checkbox" is="emby-checkbox" class="chkShowLog" />
+                            <span>${DevToolsShowLog}</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer inputContainer-withDescription">
+                        <input is="emby-input" type="number" class="txtDevToolsLogSize" pattern="[0-9]*" required="required" min="0" max="1000" step="1" label="${DevToolsLogSize}" />
+                    </div>
                 </div>
             </div>
 
