@@ -15,12 +15,12 @@ class AppSettings {
      * @param {boolean|undefined} val - Flag to enable 'Show Log' or undefined.
      * @return {boolean} 'Show Log' state.
      */
-     devmodeShowLog(val) {
+     devtoolsShowLog(val) {
         if (val !== undefined) {
-            return this.set('devmodeShowLog', val.toString());
+            return this.set('devtoolsShowLog', val.toString());
         }
 
-        return this.get('devmodeShowLog') === 'true';
+        return this.get('devtoolsShowLog') === 'true';
     }
 
     enableAutoLogin(val) {

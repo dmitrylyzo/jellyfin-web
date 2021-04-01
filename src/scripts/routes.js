@@ -85,10 +85,10 @@ import { appRouter } from '../components/appRouter';
     });
 
     defineRoute({
-        alias: '/mypreferencesdevmode.html',
-        path: 'user/devmode/index.html',
+        alias: '/mypreferencesdevtools.html',
+        path: 'user/devtools/index.html',
         autoFocus: false,
-        controller: 'user/devmode/index'
+        controller: 'user/devtools/index'
     });
 
     defineRoute({

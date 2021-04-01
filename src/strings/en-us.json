@@ -1505,7 +1505,7 @@
     "EnableEnhancedNvdecDecoder": "Enable enhanced NVDEC decoder",
     "EnableVppTonemapping": "Enable VPP Tone mapping",
     "AllowVppTonemappingHelp": "Full hardware based tone mapping without using OpenCL filter. Currently works only when transcoding videos with embedded HDR10 metadata.",
-    "DevMode": "Developer Mode",
+    "DevTools": "Developer Tools",
     "DevToolsUserAgent": "UserAgent: {0}",
     "DevToolsPlatform": "Platform: {0}",
     "DevToolsAppVersion": "AppVersion: {0}",
