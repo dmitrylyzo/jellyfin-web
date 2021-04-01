@@ -1506,8 +1506,10 @@
     "EnableVppTonemapping": "Enable VPP Tone mapping",
     "AllowVppTonemappingHelp": "Full hardware based tone mapping without using OpenCL filter. Currently works only when transcoding videos with embedded HDR10 metadata.",
     "DevTools": "Developer Tools",
-    "DevToolsUserAgent": "UserAgent: {0}",
-    "DevToolsPlatform": "Platform: {0}",
     "DevToolsAppVersion": "AppVersion: {0}",
-    "LabelShowLog": "Show Log"
+    "DevToolsLogSize": "Log size",
+    "DevToolsShowLog": "Show log",
+    "DevToolsPlatform": "Platform: {0}",
+    "DevToolsUserAgent": "UserAgent: {0}",
+    "HeaderDevToolsLog": "Log"
 }

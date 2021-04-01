@@ -11,6 +11,24 @@ class AppSettings {
     }
 
     /**
+     * Get or set log size.
+     * @param {number|undefined} val - Log size or undefined.
+     * @return {number} Log size.
+     */
+     devtoolsLogSize(val) {
+        if (val !== undefined) {
+            return this.set('devtoolsLogSize', parseInt(val, 10));
+        }
+
+        const logSize = parseInt(this.get('devtoolsLogSize'), 10);
+        if (logSize === 0) {
+            return 0;
+        } else {
+            return logSize || 1000;
+        }
+    }
+
+    /**
      * Get or set 'Show Log' state.
      * @param {boolean|undefined} val - Flag to enable 'Show Log' or undefined.
      * @return {boolean} 'Show Log' state.

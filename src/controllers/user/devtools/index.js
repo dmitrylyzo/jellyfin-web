@@ -7,6 +7,7 @@ import '../../../components/devtools/devtools';
 export default function (view, params) {
     function submit(e) {
         appSettings.devtoolsShowLog(view.querySelector('.chkShowLog').checked);
+        appSettings.devtoolsLogSize(view.querySelector('.txtDevToolsLogSize').value);
 
         toast(globalize.translate('SettingsSaved'));
 
@@ -23,6 +24,7 @@ export default function (view, params) {
         view.querySelector('.appVersion').innerHTML = globalize.translate('DevToolsAppVersion', navigator.appVersion);
 
         view.querySelector('.chkShowLog').checked = appSettings.devtoolsShowLog();
+        view.querySelector('.txtDevToolsLogSize').value = appSettings.devtoolsLogSize();
         view.querySelector('form').addEventListener('submit', submit);
         view.querySelector('.btnSave').classList.remove('hide');
 
