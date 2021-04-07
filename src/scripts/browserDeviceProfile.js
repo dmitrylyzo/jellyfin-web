@@ -330,14 +330,20 @@ import browser from './browser';
         // Not sure how to test for this
         const supportsMp2VideoAudio = browser.edgeUwp || browser.tizen || browser.web0s;
 
-        /* eslint-disable compat/compat */
-        let maxVideoWidth = browser.xboxOne ?
-            (window.screen ? window.screen.width : null) :
-            null;
+        let maxVideoWidth;
+        let maxVideoHeight;
 
-        /* eslint-enable compat/compat */
+        if (browser.xboxOne && window.screen) {
+            maxVideoWidth = window.screen.width;
+            maxVideoHeight = window.screen.height;
+        }
+
         if (options.maxVideoWidth) {
             maxVideoWidth = options.maxVideoWidth;
+        }
+
+        if (options.maxVideoHeight) {
+            maxVideoHeight = options.maxVideoHeight;
         }
 
         const canPlayAacVideoAudio = videoTestElement.canPlayType('video/mp4; codecs="avc1.640029, mp4a.40.2"').replace(/no/, '');
@@ -858,6 +864,22 @@ import browser from './browser';
             });
         }
 
+        if (maxVideoHeight) {
+            h264CodecProfileConditions.push({
+                Condition: 'LessThanEqual',
+                Property: 'Height',
+                Value: maxVideoHeight.toString(),
+                IsRequired: false
+            });
+
+            hevcCodecProfileConditions.push({
+                Condition: 'LessThanEqual',
+                Property: 'Height',
+                Value: maxVideoHeight.toString(),
+                IsRequired: false
+            });
+        }
+
         const globalMaxVideoBitrate = (getGlobalMaxVideoBitrate() || '').toString();
 
         const h264MaxVideoBitrate = globalMaxVideoBitrate;
@@ -930,6 +952,15 @@ import browser from './browser';
                 Condition: 'LessThanEqual',
                 Property: 'Width',
                 Value: maxVideoWidth.toString(),
+                IsRequired: false
+            });
+        }
+
+        if (maxVideoHeight) {
+            globalVideoConditions.push({
+                Condition: 'LessThanEqual',
+                Property: 'Height',
+                Value: maxVideoHeight.toString(),
                 IsRequired: false
             });
         }
