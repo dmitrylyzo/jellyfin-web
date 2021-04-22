@@ -20,7 +20,7 @@
 }
 
 .hiddenScrollX::-webkit-scrollbar,
-.layout-tv .scrollX::-webkit-scrollbar {
+.layout-tv ::-webkit-scrollbar {
     height: 0 !important;
     display: none;
 }
@@ -53,8 +53,7 @@
 }
 
 .hiddenScrollY::-webkit-scrollbar,
-.layout-tv .smoothScrollY::-webkit-scrollbar,
-.layout-tv .scrollY::-webkit-scrollbar {
+.layout-tv ::-webkit-scrollbar {
     width: 0 !important;
     display: none;
 }
