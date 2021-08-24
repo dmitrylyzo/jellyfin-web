@@ -269,11 +269,9 @@ export function show(options) {
                 if (options.resolveOnClick) {
                     if (options.resolveOnClick.indexOf) {
                         if (options.resolveOnClick.indexOf(selectedId) !== -1) {
-                            resolve(selectedId);
                             isResolved = true;
                         }
                     } else {
-                        resolve(selectedId);
                         isResolved = true;
                     }
                 }
@@ -291,8 +289,12 @@ export function show(options) {
                 clearTimeout(timeout);
                 timeout = null;
             }
+        });
 
-            if (!isResolved) {
+        dialogHelper.open(dlg).finally(() => {
+            if (isResolved) {
+                resolve(selectedId);
+            } else {
                 if (selectedId != null) {
                     if (options.callback) {
                         options.callback(selectedId);
@@ -304,8 +306,6 @@ export function show(options) {
                 }
             }
         });
-
-        dialogHelper.open(dlg);
 
         const pos = options.positionTo && dialogOptions.size !== 'fullscreen' ? getPosition(options, dlg) : null;
 
