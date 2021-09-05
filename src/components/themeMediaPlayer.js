@@ -3,6 +3,7 @@ import * as userSettings from '../scripts/settings/userSettings';
 import Events from '../utils/events.ts';
 import ServerConnections from './ServerConnections';
 
+let currentItem;
 let currentOwnerId;
 let currentThemeIds = [];
 
@@ -46,6 +47,7 @@ function stopIfPlaying() {
         playbackManager.stop();
     }
 
+    currentItem = null;
     currentOwnerId = null;
 }
 
@@ -69,6 +71,8 @@ function loadThemeMedia(item) {
         stopIfPlaying();
         return;
     }
+
+    currentItem = item;
 
     const apiClient = ServerConnections.getApiClient(item.ServerId);
     apiClient.getThemeMedia(apiClient.getCurrentUserId(), item.Id, true).then(function (themeMediaResult) {
@@ -105,5 +109,21 @@ Events.on(playbackManager, 'playbackstart', function (e, player) {
     // User played something manually
     if (currentThemeIds.indexOf(item.Id) == -1) {
         currentOwnerId = null;
+    }
+});
+
+Events.on(playbackManager, 'playbackstop', (_, stopInfo) => {
+    const item = stopInfo.state.NowPlayingItem;
+
+    if (item && currentThemeIds.includes(item.Id)) {
+        currentOwnerId = null;
+    } else if (!stopInfo.nextItem && currentItem) {
+        loadThemeMedia(currentItem);
+    }
+});
+
+Events.on(playbackManager, 'playbackcancelled', () => {
+    if (currentItem) {
+        loadThemeMedia(currentItem);
     }
 });
