@@ -305,16 +305,18 @@ export function show(options) {
             }
         });
 
+        dlg.addEventListener('open', () => {
+            const pos = options.positionTo && dialogOptions.size !== 'fullscreen' ? getPosition(options, dlg) : null;
+
+            if (pos) {
+                dlg.style.position = 'fixed';
+                dlg.style.margin = 0;
+                dlg.style.left = pos.left + 'px';
+                dlg.style.top = pos.top + 'px';
+            }
+        });
+
         dialogHelper.open(dlg);
-
-        const pos = options.positionTo && dialogOptions.size !== 'fullscreen' ? getPosition(options, dlg) : null;
-
-        if (pos) {
-            dlg.style.position = 'fixed';
-            dlg.style.margin = 0;
-            dlg.style.left = pos.left + 'px';
-            dlg.style.top = pos.top + 'px';
-        }
     });
 }
 
