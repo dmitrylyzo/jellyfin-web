@@ -67,9 +67,7 @@ import './style.scss';
         if (entry.intersectionRatio > 0) {
             if (source) fillImageElement(target, source);
         } else if (!source) {
-            requestAnimationFrame(() => {
-                emptyImageElement(target);
-            });
+            requestEmptyImageElement(target);
         }
     }
 
@@ -131,6 +129,21 @@ import './style.scss';
             } else {
                 canvas.classList.add('lazy-image-fadein');
             }
+        }
+    }
+
+    let rafIdEmpty;
+    let pendingEmpty = [];
+
+    function requestEmptyImageElement(target) {
+        if (!pendingEmpty.includes(target)) pendingEmpty.push(target);
+
+        if (!rafIdEmpty) {
+            rafIdEmpty = requestAnimationFrame(() => {
+                rafIdEmpty = 0;
+                for (const elem of pendingEmpty) emptyImageElement(elem);
+                pendingEmpty = [];
+            });
         }
     }
 
