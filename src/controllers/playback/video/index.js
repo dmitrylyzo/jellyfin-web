@@ -22,6 +22,7 @@ import ServerConnections from '../../../components/ServerConnections';
 import shell from '../../../scripts/shell';
 import SubtitleSync from '../../../components/subtitlesync/subtitlesync';
 import { appRouter } from '../../../components/appRouter';
+import toast from '../../../components/toast/toast';
 
 /* eslint-disable indent */
 
@@ -261,6 +262,7 @@ import { appRouter } from '../../../components/appRouter';
         }
 
         function hideOsd() {
+            toast('hideOsd');
             slideUpToHide(headerElement);
             hideMainOsdControls();
             mouseManager.hideCursor();
@@ -276,11 +278,13 @@ import { appRouter } from '../../../components/appRouter';
 
         function startOsdHideTimer() {
             stopOsdHideTimer();
+            toast('startOsdHideTimer');
             osdHideTimeout = setTimeout(hideOsd, 3e3);
         }
 
         function stopOsdHideTimer() {
             if (osdHideTimeout) {
+                toast('stopOsdHideTimer');
                 clearTimeout(osdHideTimeout);
                 osdHideTimeout = null;
             }
