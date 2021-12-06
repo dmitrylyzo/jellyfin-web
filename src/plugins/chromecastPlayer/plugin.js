@@ -638,7 +638,8 @@ class ChromecastPlayer {
                 'SetShuffleQueue',
                 'EndSession',
                 'PlayMediaSource',
-                'PlayTrailers'
+                'PlayTrailers',
+                'Select' // for Navigation
             ]
         };
     }
