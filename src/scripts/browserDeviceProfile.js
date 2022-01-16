@@ -378,6 +378,23 @@ import browser from './browser';
             maxVideoWidth = options.maxVideoWidth;
         }
 
+        let maxTranscodingVideoWidth;
+        let maxTranscodingVideoHeight;
+
+        if (options.resolution) {
+            maxTranscodingVideoWidth = options.resolution.width;
+            maxTranscodingVideoHeight = options.resolution.height;
+        } else if (window.screen)/*if (!browser.tv)*/ {
+            maxTranscodingVideoWidth = window.screen.width * window.devicePixelRatio;
+            maxTranscodingVideoHeight = window.screen.height * window.devicePixelRatio;
+        }
+
+        if (maxTranscodingVideoWidth < maxTranscodingVideoHeight) {
+            const tmp = maxTranscodingVideoWidth;
+            maxTranscodingVideoWidth = maxTranscodingVideoHeight;
+            maxTranscodingVideoHeight = tmp;
+        }
+
         const canPlayAacVideoAudio = videoTestElement.canPlayType('video/mp4; codecs="avc1.640029, mp4a.40.2"').replace(/no/, '');
         const canPlayAc3VideoAudio = supportsAc3(videoTestElement);
         const canPlayEac3VideoAudio = supportsEac3(videoTestElement);
@@ -731,6 +748,30 @@ import browser from './browser';
             Context: 'Static',
             Protocol: 'http'
         });
+
+        if (maxTranscodingVideoWidth && maxTranscodingVideoHeight) {
+            profile.TranscodingProfiles.forEach((transcodingProfile) => {
+                if (transcodingProfile.Type === 'Video') {
+                    transcodingProfile.Conditions = (transcodingProfile.Conditions || []).filter((condition) => {
+                        return condition.Property !== 'Width' && condition.Property !== 'Height';
+                    });
+
+                    transcodingProfile.Conditions.push({
+                        Condition: 'LessThanEqual',
+                        Property: 'Width',
+                        Value: maxTranscodingVideoWidth.toString(),
+                        IsRequired: false
+                    });
+
+                    transcodingProfile.Conditions.push({
+                        Condition: 'LessThanEqual',
+                        Property: 'Height',
+                        Value: maxTranscodingVideoHeight.toString(),
+                        IsRequired: false
+                    });
+                }
+            });
+        }
 
         profile.ContainerProfiles = [];
 
