@@ -378,6 +378,15 @@ import browser from './browser';
             maxVideoWidth = options.maxVideoWidth;
         }
 
+        // Use larger dimension to account for screen orientation changes
+        let maxTranscodingVideoWidth;
+
+        if (options.screen) {
+            maxTranscodingVideoWidth = Math.floor(Math.max(options.screen.width, options.screen.height));
+        } else if (window.screen && !browser.tv) {
+            maxTranscodingVideoWidth = Math.floor(Math.max(window.screen.width, window.screen.height) * window.devicePixelRatio);
+        }
+
         const canPlayAacVideoAudio = videoTestElement.canPlayType('video/mp4; codecs="avc1.640029, mp4a.40.2"').replace(/no/, '');
         const canPlayAc3VideoAudio = supportsAc3(videoTestElement);
         const canPlayEac3VideoAudio = supportsEac3(videoTestElement);
@@ -731,6 +740,23 @@ import browser from './browser';
             Context: 'Static',
             Protocol: 'http'
         });
+
+        if (maxTranscodingVideoWidth) {
+            profile.TranscodingProfiles.forEach((transcodingProfile) => {
+                if (transcodingProfile.Type === 'Video') {
+                    transcodingProfile.Conditions = (transcodingProfile.Conditions || []).filter((condition) => {
+                        return condition.Property !== 'Width';
+                    });
+
+                    transcodingProfile.Conditions.push({
+                        Condition: 'LessThanEqual',
+                        Property: 'Width',
+                        Value: maxTranscodingVideoWidth.toString(),
+                        IsRequired: false
+                    });
+                }
+            });
+        }
 
         profile.ContainerProfiles = [];
 
