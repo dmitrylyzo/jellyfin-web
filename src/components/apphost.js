@@ -382,6 +382,27 @@ export const appHost = {
             const att = scalable ? 'width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes' : 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no';
             document.querySelector('meta[name=viewport]').setAttribute('content', att);
         }
+    },
+    screen: () => {
+        let hostScreen = null;
+
+        const appHostImpl = window.NativeShell?.AppHost;
+
+        if (appHostImpl?.screen) {
+            hostScreen = appHostImpl.screen();
+        } else if (window.screen && !browser.tv) {
+            hostScreen = {
+                width: Math.floor(window.screen.width * window.devicePixelRatio),
+                height: Math.floor(window.screen.height * window.devicePixelRatio)
+            };
+        }
+
+        if (hostScreen) {
+            // Use larger dimension to account for screen orientation changes
+            hostScreen.maxAllowedWidth = Math.max(hostScreen.width, hostScreen.height);
+        }
+
+        return hostScreen;
     }
 };
 

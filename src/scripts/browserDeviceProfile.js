@@ -1,3 +1,4 @@
+import { appHost } from '../components/apphost';
 import appSettings from './settings/appSettings';
 import * as userSettings from './settings/userSettings';
 import browser from './browser';
@@ -736,6 +737,25 @@ import browser from './browser';
             Context: 'Static',
             Protocol: 'http'
         });
+
+        const maxTranscodingVideoWidth = appHost.screen()?.maxAllowedWidth;
+
+        if (maxTranscodingVideoWidth) {
+            profile.TranscodingProfiles.forEach((transcodingProfile) => {
+                if (transcodingProfile.Type === 'Video') {
+                    transcodingProfile.Conditions = (transcodingProfile.Conditions || []).filter((condition) => {
+                        return condition.Property !== 'Width';
+                    });
+
+                    transcodingProfile.Conditions.push({
+                        Condition: 'LessThanEqual',
+                        Property: 'Width',
+                        Value: maxTranscodingVideoWidth.toString(),
+                        IsRequired: false
+                    });
+                }
+            });
+        }
 
         profile.ContainerProfiles = [];
 
