@@ -331,8 +331,6 @@ import layoutManager from './layoutManager';
      * @return {number} Scroll position.
      */
     function calcScroll(scrollerData, elementPos, elementSize, centered) {
-        const maxScroll = scrollerData.scrollSize - scrollerData.clientSize;
-
         let scroll;
 
         if (centered) {
@@ -342,7 +340,7 @@ import layoutManager from './layoutManager';
             scroll = scrollerData.scrollPos - delta;
         }
 
-        return clamp(Math.round(scroll), 0, maxScroll);
+        return Math.round(scroll);
     }
 
     /**
@@ -463,6 +461,9 @@ import layoutManager from './layoutManager';
     function doScroll(xScroller, scrollX, yScroller, scrollY, smooth) {
         resetScrollTimer();
 
+        scrollX = clamp(scrollX, 0, xScroller.scrollWidth - xScroller.clientWidth);
+        scrollY = clamp(scrollY, 0, yScroller.scrollHeight - yScroller.clientHeight);
+
         if (smooth && useAnimatedScroll()) {
             animateScroll(xScroller, scrollX, yScroller, scrollY);
         } else {
@@ -510,11 +511,8 @@ import layoutManager from './layoutManager';
         // Scroller is document itself by default
         const scroller = getScrollableParent(null, false);
 
-        const xScrollerData = getScrollerData(scroller, false);
-        const yScrollerData = getScrollerData(scroller, true);
-
-        scrollX = clamp(Math.round(scrollX), 0, xScrollerData.scrollSize - xScrollerData.clientSize);
-        scrollY = clamp(Math.round(scrollY), 0, yScrollerData.scrollSize - yScrollerData.clientSize);
+        scrollX = Math.round(scrollX || 0);
+        scrollY = Math.round(scrollY || 0);
 
         doScroll(scroller, scrollX, scroller, scrollY, smooth);
     }
