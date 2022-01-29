@@ -1,3 +1,4 @@
+import htmlescape from 'escape-html';
 import dom from '../../scripts/dom';
 import layoutManager from '../layoutManager';
 import dialogHelper from '../dialogHelper/dialogHelper';
@@ -448,12 +449,12 @@ import template from './metadataEditor.template.html';
                 fullName = idInfo.Name + ' ' + globalize.translate(idInfo.Type);
             }
 
-            const labelText = globalize.translate('LabelDynamicExternalId', fullName);
+            const labelText = globalize.translate('LabelDynamicExternalId', htmlescape(fullName));
 
             html += '<div class="inputContainer">';
             html += '<div class="flex align-items-center">';
 
-            const value = providerIds[idInfo.Key] || '';
+            const value = htmlescape(providerIds[idInfo.Key] || '');
 
             html += '<div class="flex-grow">';
             html += '<input is="emby-input" class="txtExternalId" value="' + value + '" data-providerkey="' + idInfo.Key + '" data-formatstring="' + formatString + '" id="' + id + '" label="' + labelText + '"/>';
@@ -860,7 +861,7 @@ import template from './metadataEditor.template.html';
         for (let i = 0, length = ratings.length; i < length; i++) {
             rating = ratings[i];
 
-            html += "<option value='" + rating.Value + "'>" + rating.Name + '</option>';
+            html += "<option value='" + htmlescape(rating.Value) + "'>" + htmlescape(rating.Name) + '</option>';
         }
 
         select.innerHTML = html;
@@ -893,7 +894,7 @@ import template from './metadataEditor.template.html';
             html += '<div class="listItemBody">';
 
             html += '<div class="textValue">';
-            html += items[i];
+            html += htmlescape(items[i]);
             html += '</div>';
 
             html += '</div>';
@@ -923,7 +924,7 @@ import template from './metadataEditor.template.html';
             html += '<button style="text-align:left;" type="button" class="btnEditPerson clearButton" data-index="' + i + '">';
 
             html += '<div class="textValue">';
-            html += (person.Name || '');
+            html += htmlescape(person.Name || '');
             html += '</div>';
 
             if (person.Role && person.Role !== lastType) {

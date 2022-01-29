@@ -1,3 +1,4 @@
+import htmlescape from 'escape-html';
 import 'jquery';
 import taskButton from '../../scripts/taskbutton';
 import loading from '../../components/loading/loading';
@@ -297,7 +298,7 @@ import cardBuilder from '../../components/cardbuilder/cardBuilder';
 
             if (virtualFolder.showNameWithIcon) {
                 html += '<div style="margin:1em 0;position:width:100%;">';
-                html += virtualFolder.Name;
+                html += htmlescape(virtualFolder.Name);
                 html += '</div>';
             }
 
@@ -319,7 +320,7 @@ import cardBuilder from '../../components/cardbuilder/cardBuilder';
         if (virtualFolder.showNameWithIcon) {
             html += '&nbsp;';
         } else {
-            html += virtualFolder.Name;
+            html += htmlescape(virtualFolder.Name);
         }
 
         html += '</div>';

@@ -5,6 +5,7 @@
  * @module components/itemMediaInfo/itemMediaInfo
  */
 
+import htmlescape from 'escape-html';
 import dialogHelper from '../dialogHelper/dialogHelper';
 import layoutManager from '../layoutManager';
 import globalize from '../../scripts/globalize';
@@ -33,7 +34,7 @@ import template from './itemMediaInfo.template.html';
     function getMediaSourceHtml(user, item, version) {
         let html = '';
         if (version.Name) {
-            html += `<div><h2 class="mediaInfoStreamType">${version.Name}</h2></div>`;
+            html += `<div><h2 class="mediaInfoStreamType">${htmlescape(version.Name)}</h2></div>`;
         }
         if (version.Container) {
             html += `${createAttribute(globalize.translate('MediaInfoContainer'), version.Container)}<br/>`;
@@ -158,7 +159,7 @@ import template from './itemMediaInfo.template.html';
     }
 
     function createAttribute(label, value) {
-        return `<span class="mediaInfoLabel">${label}</span><span class="mediaInfoAttribute">${value}</span>`;
+        return `<span class="mediaInfoLabel">${label}</span><span class="mediaInfoAttribute">${htmlescape(value)}</span>`;
     }
 
     function loadMediaInfo(itemId, serverId) {

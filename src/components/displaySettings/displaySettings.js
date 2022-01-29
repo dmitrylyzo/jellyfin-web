@@ -1,3 +1,4 @@
+import htmlescape from 'escape-html';
 import browser from '../../scripts/browser';
 import layoutManager from '../layoutManager';
 import { pluginManager } from '../pluginManager';
@@ -21,7 +22,7 @@ import template from './displaySettings.template.html';
     function fillThemes(select, selectedTheme) {
         skinManager.getThemes().then(themes => {
             select.innerHTML = themes.map(t => {
-                return `<option value="${t.id}">${t.name}</option>`;
+                return `<option value="${t.id}">${htmlescape(t.name)}</option>`;
             }).join('');
 
             // get default theme
@@ -47,7 +48,7 @@ import template from './displaySettings.template.html';
         });
 
         selectScreensaver.innerHTML = options.map(o => {
-            return `<option value="${o.value}">${o.name}</option>`;
+            return `<option value="${o.value}">${htmlescape(o.name)}</option>`;
         }).join('');
 
         selectScreensaver.value = userSettings.screensaver();

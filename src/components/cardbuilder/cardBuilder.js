@@ -5,6 +5,7 @@
  * @module components/cardBuilder/cardBuilder
  */
 
+import htmlescape from 'escape-html';
 import datetime from '../../scripts/datetime';
 import imageLoader from '../images/imageLoader';
 import itemHelper from '../itemHelper';
@@ -805,11 +806,11 @@ import ServerConnections from '../ServerConnections';
                                 IsFolder: true
                             }));
                         } else {
-                            lines.push(item.SeriesName);
+                            lines.push(htmlescape(item.SeriesName));
                         }
                     } else {
                         if (isUsingLiveTvNaming(item)) {
-                            lines.push(item.Name);
+                            lines.push(htmlescape(item.Name));
 
                             if (!item.EpisodeTitle) {
                                 titleAdded = true;
@@ -818,7 +819,7 @@ import ServerConnections from '../ServerConnections';
                             const parentTitle = item.SeriesName || item.Series || item.Album || item.AlbumArtist || '';
 
                             if (parentTitle || showTitle) {
-                                lines.push(parentTitle);
+                                lines.push(htmlescape(parentTitle));
                             }
                         }
                     }
@@ -852,7 +853,7 @@ import ServerConnections from '../ServerConnections';
                         item.AlbumArtists[0].IsFolder = true;
                         lines.push(getTextActionButton(item.AlbumArtists[0], null, serverId));
                     } else {
-                        lines.push(isUsingLiveTvNaming(item) ? item.Name : (item.SeriesName || item.Series || item.Album || item.AlbumArtist || ''));
+                        lines.push(htmlescape(isUsingLiveTvNaming(item) ? item.Name : (item.SeriesName || item.Series || item.Album || item.AlbumArtist || '')));
                     }
                 }
 
@@ -940,13 +941,13 @@ import ServerConnections from '../ServerConnections';
 
                         }, item.ChannelName));
                     } else {
-                        lines.push(item.ChannelName || '&nbsp;');
+                        lines.push(htmlescape(item.ChannelName) || '&nbsp;');
                     }
                 }
 
                 if (options.showCurrentProgram && item.Type === 'TvChannel') {
                     if (item.CurrentProgram) {
-                        lines.push(item.CurrentProgram.Name);
+                        lines.push(htmlescape(item.CurrentProgram.Name));
                     } else {
                         lines.push('');
                     }
@@ -972,13 +973,13 @@ import ServerConnections from '../ServerConnections';
                     if (item.RecordAnyChannel) {
                         lines.push(globalize.translate('AllChannels'));
                     } else {
-                        lines.push(item.ChannelName || globalize.translate('OneChannel'));
+                        lines.push(htmlescape(item.ChannelName) || globalize.translate('OneChannel'));
                     }
                 }
 
                 if (options.showPersonRoleOrType) {
                     if (item.Role) {
-                        lines.push(globalize.translate('PersonRole', item.Role));
+                        lines.push(globalize.translate('PersonRole', htmlescape(item.Role)));
                     }
                 }
             }
@@ -988,7 +989,7 @@ import ServerConnections from '../ServerConnections';
             }
 
             if (overlayText && showTitle) {
-                lines = [item.Name];
+                lines = [htmlescape(item.Name)];
             }
 
             const addRightTextMargin = isOuterFooter && options.cardLayout && !options.centerText && options.cardFooterAside !== 'none' && layoutManager.mobile;
@@ -1022,6 +1023,8 @@ import ServerConnections from '../ServerConnections';
             if (!text) {
                 text = itemHelper.getDisplayName(item);
             }
+
+            text = htmlescape(text);
 
             if (layoutManager.tv) {
                 return text;
@@ -1419,7 +1422,7 @@ import ServerConnections from '../ServerConnections';
             const mediaTypeData = item.MediaType ? (' data-mediatype="' + item.MediaType + '"') : '';
             const collectionTypeData = item.CollectionType ? (' data-collectiontype="' + item.CollectionType + '"') : '';
             const channelIdData = item.ChannelId ? (' data-channelid="' + item.ChannelId + '"') : '';
-            const pathData = item.Path ? (' data-path="' + item.Path + '"') : '';
+            const pathData = item.Path ? (' data-path="' + htmlescape(item.Path) + '"') : '';
             const contextData = options.context ? (' data-context="' + options.context + '"') : '';
             const parentIdData = options.parentId ? (' data-parentid="' + options.parentId + '"') : '';
             const startDate = item.StartDate ? (' data-startdate="' + item.StartDate.toString() + '"') : '';
@@ -1431,7 +1434,7 @@ import ServerConnections from '../ServerConnections';
                 additionalCardContent += getHoverMenuHtml(item, action);
             }
 
-            return '<' + tagName + ' data-index="' + index + '"' + timerAttributes + actionAttribute + ' data-isfolder="' + (item.IsFolder || false) + '" data-serverid="' + (item.ServerId || options.serverId) + '" data-id="' + (item.Id || item.ItemId) + '" data-type="' + item.Type + '"' + mediaTypeData + collectionTypeData + channelIdData + pathData + positionTicksData + collectionIdData + playlistIdData + contextData + parentIdData + startDate + endDate + ' data-prefix="' + prefix + '" class="' + className + '">' + cardImageContainerOpen + innerCardFooter + cardImageContainerClose + overlayButtons + additionalCardContent + cardScalableClose + outerCardFooter + cardBoxClose + '</' + tagName + '>';
+            return '<' + tagName + ' data-index="' + index + '"' + timerAttributes + actionAttribute + ' data-isfolder="' + (item.IsFolder || false) + '" data-serverid="' + (item.ServerId || options.serverId) + '" data-id="' + (item.Id || item.ItemId) + '" data-type="' + item.Type + '"' + mediaTypeData + collectionTypeData + channelIdData + pathData + positionTicksData + collectionIdData + playlistIdData + contextData + parentIdData + startDate + endDate + ' data-prefix="' + htmlescape(prefix) + '" class="' + className + '">' + cardImageContainerOpen + innerCardFooter + cardImageContainerClose + overlayButtons + additionalCardContent + cardScalableClose + outerCardFooter + cardBoxClose + '</' + tagName + '>';
         }
 
         /**
@@ -1516,7 +1519,7 @@ import ServerConnections from '../ServerConnections';
             }
 
             const defaultName = isUsingLiveTvNaming(item) ? item.Name : itemHelper.getDisplayName(item);
-            return '<div class="cardText cardDefaultText">' + defaultName + '</div>';
+            return '<div class="cardText cardDefaultText">' + htmlescape(defaultName) + '</div>';
         }
 
         /**

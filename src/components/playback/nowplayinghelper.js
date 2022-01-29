@@ -1,3 +1,5 @@
+import htmlescape from 'escape-html';
+
 export function getNowPlayingNames(nowPlayingItem, includeNonNameInfo) {
     let topItem = nowPlayingItem;
     let bottomItem = null;
@@ -59,13 +61,13 @@ export function getNowPlayingNames(nowPlayingItem, includeNonNameInfo) {
     const list = [];
 
     list.push({
-        text: topText,
+        text: htmlescape(topText),
         item: topItem
     });
 
     if (bottomText) {
         list.push({
-            text: bottomText,
+            text: htmlescape(bottomText),
             item: bottomItem
         });
     }

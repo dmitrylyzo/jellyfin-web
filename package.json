@@ -71,6 +71,7 @@
     "date-fns": "2.28.0",
     "dompurify": "2.3.4",
     "epubjs": "0.3.90",
+    "escape-html": "1.0.3",
     "fast-text-encoding": "1.0.3",
     "flv.js": "1.6.2",
     "headroom.js": "0.12.0",

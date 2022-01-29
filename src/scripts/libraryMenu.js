@@ -1,3 +1,4 @@
+import htmlescape from 'escape-html';
 import dom from './dom';
 import layoutManager from '../components/layoutManager';
 import inputManager from './inputManager';
@@ -542,7 +543,7 @@ import Headroom from 'headroom.js';
         }
 
         menuHtml += '<span class="navMenuOptionText">';
-        menuHtml += item.name;
+        menuHtml += htmlescape(item.name);
         menuHtml += '</span>';
         return menuHtml + '</a>';
     }
@@ -560,7 +561,7 @@ import Headroom from 'headroom.js';
                     menuHtml += getToolsLinkHtml(item);
                 } else if (item.name) {
                     menuHtml += '<h3 class="sidebarHeader">';
-                    menuHtml += item.name;
+                    menuHtml += htmlescape(item.name);
                     menuHtml += '</h3>';
                 }
             }
@@ -683,7 +684,7 @@ import Headroom from 'headroom.js';
 
                     return `<a is="emby-linkbutton" data-itemid="${itemId}" class="lnkMediaFolder navMenuOption" href="${getItemHref(i, i.CollectionType)}">
                                     <span class="material-icons navMenuOptionIcon ${icon}"></span>
-                                    <span class="sectionName navMenuOptionText">${i.Name}</span>
+                                    <span class="sectionName navMenuOptionText">${htmlescape(i.Name)}</span>
                                   </a>`;
                 }).join('');
                 libraryMenuOptions.innerHTML = html;
@@ -734,7 +735,7 @@ import Headroom from 'headroom.js';
         if (info && !info.isLocalPlayer) {
             icon.classList.add('cast_connected');
             headerCastButton.classList.add('castButton-active');
-            context.querySelector('.headerSelectedPlayer').innerHTML = info.deviceName || info.name;
+            context.querySelector('.headerSelectedPlayer').innerText = info.deviceName || info.name;
         } else {
             icon.classList.add('cast');
             headerCastButton.classList.remove('castButton-active');
@@ -956,7 +957,7 @@ import Headroom from 'headroom.js';
             pageTitleElement.classList.remove('pageTitleWithLogo');
             pageTitleElement.classList.remove('pageTitleWithDefaultLogo');
             pageTitleElement.style.backgroundImage = null;
-            pageTitleElement.innerHTML = html || '';
+            pageTitleElement.innerText = html || '';
         }
 
         document.title = title || 'Jellyfin';

@@ -1,3 +1,4 @@
+import htmlescape from 'escape-html';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { appRouter } from '../appRouter';
@@ -15,7 +16,7 @@ const createSuggestionLink = ({name, href}) => ({
     class='button-link'
     style='display: inline-block; padding: 0.5em 1em;'
     href='${href}'
->${name}</a>`
+>${htmlescape(name)}</a>`
 });
 
 type SearchSuggestionsProps = {
