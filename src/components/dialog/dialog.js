@@ -2,6 +2,7 @@ import htmlescape from 'escape-html';
 import dialogHelper from '../dialogHelper/dialogHelper';
 import dom from '../../scripts/dom';
 import layoutManager from '../layoutManager';
+import { sanitize } from '../../scripts/sanitize';
 import scrollHelper from '../../scripts/scrollHelper';
 import globalize from '../../scripts/globalize';
 import 'material-design-icons-iconfont';
@@ -54,7 +55,7 @@ import template from './dialog.template.html';
         }
 
         const displayText = options.html || options.text || '';
-        dlg.querySelector('.text').innerHTML = displayText;
+        dlg.querySelector('.text').innerHTML = sanitize(displayText);
 
         if (!displayText) {
             dlg.querySelector('.dialogContentInner').classList.add('hide');

@@ -32,6 +32,7 @@ import Dashboard from '../../scripts/clientUtils';
 import ServerConnections from '../../components/ServerConnections';
 import confirm from '../../components/confirm/confirm';
 import { download } from '../../scripts/fileDownloader';
+import { sanitize } from '../../scripts/sanitize';
 
 function autoFocus(container) {
     import('../../components/autoFocuser').then(({ default: autoFocuser }) => {
@@ -901,7 +902,7 @@ function renderOverview(page, item) {
     const overviewElements = page.querySelectorAll('.overview');
 
     if (overviewElements.length > 0) {
-        const overview = item.Overview || '';
+        const overview = sanitize(item.Overview || '');
 
         if (overview) {
             for (const overviewElemnt of overviewElements) {
