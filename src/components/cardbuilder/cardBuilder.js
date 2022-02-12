@@ -1744,5 +1744,7 @@ export default {
     onUserDataChanged: onUserDataChanged,
     onTimerCreated: onTimerCreated,
     onTimerCancelled: onTimerCancelled,
-    onSeriesTimerCancelled: onSeriesTimerCancelled
+    onSeriesTimerCancelled: onSeriesTimerCancelled,
+    getCardImageUrl, // until moved to React
+    setCardData // until moved to React
 };

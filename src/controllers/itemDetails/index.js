@@ -1,7 +1,10 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { intervalToDuration } from 'date-fns';
 import { appHost } from '../../components/apphost';
 import loading from '../../components/loading/loading';
 import { appRouter } from '../../components/appRouter';
+import ItemCard from '../../components/cardbuilder/ItemCard';
 import layoutManager from '../../components/layoutManager';
 import { Events } from 'jellyfin-apiclient';
 import * as userSettings from '../../scripts/settings/userSettings';
@@ -812,7 +815,7 @@ function renderLinks(page, item) {
 function renderDetailImage(elem, item, imageLoader) {
     const itemArray = [];
     itemArray.push(item);
-    const cardHtml = cardBuilder.getCardsHtml(itemArray, {
+    /*const cardHtml = cardBuilder.getCardsHtml(itemArray, {
         shape: 'auto',
         showTitle: false,
         centerText: true,
@@ -825,10 +828,25 @@ function renderDetailImage(elem, item, imageLoader) {
     });
 
     elem.innerHTML = cardHtml;
+    */
+    const posterCard = React.createElement(ItemCard, {
+        item,
+        //shape: 'backdrop', //'auto',
+        showTitle: false,
+        centerText: true,
+        overlayText: false,
+        transition: false,
+        disableIndicators: true,
+        overlayPlayButton: layoutManager.mobile ? false : true,
+        action: layoutManager.mobile ? 'none' : 'resume',
+        width: dom.getWindowSize().innerWidth * 0.25
+    }, null);
+    ReactDOM.render(posterCard, elem);
+
     imageLoader.lazyChildren(elem);
 
     // Avoid breaking the design by preventing focus of the poster using the keyboard.
-    elem.querySelector('button').tabIndex = -1;
+    //elem.querySelector('button').tabIndex = -1;
 }
 
 function renderImage(page, item) {
