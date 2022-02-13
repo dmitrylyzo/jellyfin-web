@@ -4,67 +4,31 @@ import cardBuilder from './cardBuilder';
 import itemHelper from '../itemHelper';
 import layoutManager from '../layoutManager';
 import { playbackManager } from '../playback/playbackmanager';
+import PaperIconButtonLight from '../../elements/emby-button/PaperIconButtonLight';
+import PlayStateButton from '../../elements/emby-playstatebutton/PlayStateButton';
+import RatingButton from '../../elements/emby-ratingbutton/RatingButton';
 
 const btnCssClass = 'cardOverlayButton cardOverlayButton-hover itemAction paper-icon-button-light';
 
 function PlayButton() {
-    import('../../elements/emby-button/paper-icon-button-light');
+    //import('../../elements/emby-button/paper-icon-button-light');
 
     const cssClass = `${btnCssClass} cardOverlayFab-primary`;
 
     return (
-        <button is='paper-icon-button-light' class={cssClass} data-action='resume'>
+        <PaperIconButtonLight className={cssClass} data-action='resume'>
             <span className='material-icons cardOverlayButtonIcon cardOverlayButtonIcon-hover play_arrow'></span>
-        </button>
-    );
-}
-
-function PlayStateButton(props) {
-    import('../../elements/emby-playstatebutton/emby-playstatebutton');
-
-    const item = props.item;
-    const userData = props.userData;
-
-    return (
-        <button is='emby-playstatebutton' type='button' class={btnCssClass}
-            data-action='none'
-            data-id={item.Id}
-            data-serverid={item.ServerId}
-            data-itemtype={item.Type}
-            data-played={userData.Played}
-        >
-            <span className='material-icons cardOverlayButtonIcon cardOverlayButtonIcon-hover check'></span>
-        </button>
-    );
-}
-
-function RatingButton(props) {
-    import('../../elements/emby-ratingbutton/emby-ratingbutton');
-
-    const item = props.item;
-    const userData = props.userData;
-
-    return (
-        <button is='emby-ratingbutton' type='button' class={btnCssClass}
-            data-action='none'
-            data-id={item.Id}
-            data-serverid={item.ServerId}
-            data-itemtype={item.Type}
-            data-likes={userData.Likes}
-            data-isfavorite={userData.IsFavorite}
-        >
-            <span className='material-icons cardOverlayButtonIcon cardOverlayButtonIcon-hover favorite'></span>
-        </button>
+        </PaperIconButtonLight>
     );
 }
 
 function MoreButton() {
-    import('../../elements/emby-button/paper-icon-button-light');
+    //import('../../elements/emby-button/paper-icon-button-light');
 
     return (
-        <button is='paper-icon-button-light' class={btnCssClass} data-action='menu'>
+        <PaperIconButtonLight className={btnCssClass} data-action='menu'>
             <span className='material-icons cardOverlayButtonIcon cardOverlayButtonIcon-hover more_vert'></span>
-        </button>
+        </PaperIconButtonLight>
     );
 }
 
@@ -157,8 +121,8 @@ const ItemCard: FunctionComponent<IProps> = ({
                 {overlayPlayButton && playbackManager.canPlay(item) ? <PlayButton action={action}/> : null}
                 {overlayMarkPlayedButton || overlayMoreButton || overlayRateButton ? (
                     <div className='cardOverlayButton-br flex'>
-                        {overlayMarkPlayedButton && itemHelper.canMarkPlayed(item) ? <PlayStateButton item={item} userData={userData}/> : null}
-                        {overlayMarkPlayedButton && itemHelper.canRate(item) ? <RatingButton item={item} userData={userData}/> : null}
+                        {overlayMarkPlayedButton && itemHelper.canMarkPlayed(item) ? <PlayStateButton className={btnCssClass} item={item}/> : null}
+                        {overlayRateButton && itemHelper.canRate(item) ? <RatingButton className={btnCssClass} item={item}/> : null}
                         {overlayMoreButton ? <MoreButton/> : null}
                     </div>
                 ) : null}
