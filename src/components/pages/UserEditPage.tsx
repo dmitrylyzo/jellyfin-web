@@ -144,7 +144,7 @@ const UserEditPage: FunctionComponent = () => {
         user.Policy.IsDisabled ? disabledUserBanner.classList.remove('hide') : disabledUserBanner.classList.add('hide');
 
         const txtUserName = elem.querySelector('#txtUserName') as HTMLInputElement;
-        txtUserName.disabled = '';
+        txtUserName.disabled = false;
         txtUserName.removeAttribute('disabled');
 
         const lnkEditUserPreferences = elem.querySelector('.lnkEditUserPreferences') as HTMLDivElement;
@@ -166,7 +166,8 @@ const UserEditPage: FunctionComponent = () => {
         (elem.querySelector('.chkEnableVideoPlaybackRemuxing') as HTMLInputElement).checked = user.Policy.EnablePlaybackRemuxing;
         (elem.querySelector('.chkForceRemoteSourceTranscoding') as HTMLInputElement).checked = user.Policy.ForceRemoteSourceTranscoding;
         (elem.querySelector('.chkRemoteAccess') as HTMLInputElement).checked = user.Policy.EnableRemoteAccess == null || user.Policy.EnableRemoteAccess;
-        (elem.querySelector('#txtRemoteClientBitrateLimit') as HTMLInputElement).value = user.Policy.RemoteClientBitrateLimit / 1e6 || '';
+        (elem.querySelector('#txtRemoteClientBitrateLimit') as HTMLInputElement).value = user.Policy.RemoteClientBitrateLimit > 0 ?
+            (user.Policy.RemoteClientBitrateLimit / 1e6).toLocaleString(undefined, {maximumFractionDigits: 6}) : '';
         (elem.querySelector('#txtLoginAttemptsBeforeLockout') as HTMLInputElement).value = user.Policy.LoginAttemptsBeforeLockout || '0';
         (elem.querySelector('#txtMaxActiveSessions') as HTMLInputElement).value = user.Policy.MaxActiveSessions || '0';
         if (window.ApiClient.isMinServerVersion('10.6.0')) {
