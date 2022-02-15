@@ -30,7 +30,7 @@ const UserEditPage: FunctionComponent = () => {
     const [ authenticationProviderId, setAuthenticationProviderId ] = useState('');
     const [ passwordResetProviderId, setPasswordResetProviderId ] = useState('');
 
-    const element = useRef(null);
+    const element = useRef<HTMLDivElement>(null);
 
     const triggerChange = (select) => {
         const evt = document.createEvent('HTMLEvents');

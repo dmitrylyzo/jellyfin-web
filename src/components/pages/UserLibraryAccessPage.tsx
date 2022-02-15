@@ -24,7 +24,7 @@ const UserLibraryAccessPage: FunctionComponent = () => {
     const [mediaFoldersItems, setMediaFoldersItems] = useState([]);
     const [devicesItems, setDevicesItems] = useState([]);
 
-    const element = useRef(null);
+    const element = useRef<HTMLDivElement>(null);
 
     const triggerChange = (select) => {
         const evt = document.createEvent('HTMLEvents');
