@@ -1,3 +1,4 @@
+import { Item } from 'jellyfin-apiclient';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { appRouter } from '../appRouter';
@@ -24,7 +25,7 @@ type SearchSuggestionsProps = {
 }
 
 const SearchSuggestions: FunctionComponent<SearchSuggestionsProps> = ({ serverId, parentId }: SearchSuggestionsProps) => {
-    const [ suggestions, setSuggestions ] = useState([]);
+    const [ suggestions, setSuggestions ] = useState<Item[]>([]);
 
     useEffect(() => {
         // TODO: Remove type casting once we're using a properly typed API client

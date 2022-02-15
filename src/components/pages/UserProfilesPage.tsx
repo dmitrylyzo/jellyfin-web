@@ -1,4 +1,4 @@
-
+import { User } from 'jellyfin-apiclient';
 import React, {FunctionComponent, useEffect, useState, useRef} from 'react';
 import Dashboard from '../../scripts/clientUtils';
 import globalize from '../../scripts/globalize';
@@ -21,7 +21,7 @@ type MenuEntry = {
 }
 
 const UserProfilesPage: FunctionComponent = () => {
-    const [ users, setUsers ] = useState([]);
+    const [ users, setUsers ] = useState<User[]>([]);
 
     const element = useRef<HTMLDivElement>(null);
 
