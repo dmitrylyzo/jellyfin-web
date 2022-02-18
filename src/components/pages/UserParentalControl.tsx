@@ -12,7 +12,7 @@ import SelectMaxParentalRating from '../dashboard/users/SelectMaxParentalRating'
 import SectionTabs from '../dashboard/users/SectionTabs';
 import loading from '../loading/loading';
 import toast from '../toast/toast';
-import { AccessSchedule, UserDto } from '@thornbill/jellyfin-sdk/dist/generated-client';
+import { AccessSchedule, DynamicDayOfWeek, UserDto } from '@thornbill/jellyfin-sdk/dist/generated-client';
 
 type RatingsArr = {
     Name: string;
@@ -307,7 +307,13 @@ const UserParentalControl: FunctionComponent = () => {
         };
 
         (elem.querySelector('.btnAddSchedule') as HTMLButtonElement).addEventListener('click', function () {
-            showSchedulePopup({}, -1);
+            showSchedulePopup({
+                Id: 0,
+                UserId: '',
+                DayOfWeek: DynamicDayOfWeek.Sunday,
+                StartHour: 0,
+                EndHour: 0
+            }, -1);
         });
 
         (elem.querySelector('.btnAddBlockedTag') as HTMLButtonElement).addEventListener('click', function () {
