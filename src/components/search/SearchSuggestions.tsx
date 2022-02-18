@@ -1,4 +1,4 @@
-import { Item } from 'jellyfin-apiclient';
+import { BaseItemDto } from '@thornbill/jellyfin-sdk/dist/generated-client';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { appRouter } from '../appRouter';
@@ -20,16 +20,16 @@ const createSuggestionLink = ({name, href}) => ({
 });
 
 type SearchSuggestionsProps = {
-    serverId?: string;
+    serverId: string;
     parentId?: string;
 }
 
 const SearchSuggestions: FunctionComponent<SearchSuggestionsProps> = ({ serverId, parentId }: SearchSuggestionsProps) => {
-    const [ suggestions, setSuggestions ] = useState<Item[]>([]);
+    const [ suggestions, setSuggestions ] = useState<BaseItemDto[]>([]);
 
     useEffect(() => {
         // TODO: Remove type casting once we're using a properly typed API client
-        const apiClient = (ServerConnections as any).getApiClient(serverId);
+        const apiClient = ServerConnections.getApiClient(serverId);
 
         apiClient.getItems(apiClient.getCurrentUserId(), {
             SortBy: 'IsFavoriteOrLiked,Random',
@@ -40,7 +40,7 @@ const SearchSuggestions: FunctionComponent<SearchSuggestionsProps> = ({ serverId
             EnableImages: false,
             ParentId: parentId,
             EnableTotalRecordCount: false
-        }).then(result => setSuggestions(result.Items));
+        }).then(result => setSuggestions(result.Items || []));
     }, [parentId, serverId]);
 
     return (
