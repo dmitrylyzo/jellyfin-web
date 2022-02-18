@@ -111,6 +111,14 @@ const NewUserPage: FunctionComponent = () => {
             userInput.Name = (elem.querySelector('#txtUsername') as HTMLInputElement).value;
             userInput.Password = (elem.querySelector('#txtPassword') as HTMLInputElement).value;
             window.ApiClient.createUser(userInput).then(function (user) {
+                if (!user.Id) {
+                    throw new Error('Unexpected null user.Id');
+                }
+
+                if (!user.Policy) {
+                    throw new Error('Unexpected null user.Policy');
+                }
+
                 user.Policy.EnableAllFolders = (elem.querySelector('.chkEnableAllFolders') as HTMLInputElement).checked;
                 user.Policy.EnabledFolders = [];
 
