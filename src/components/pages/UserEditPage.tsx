@@ -32,7 +32,7 @@ const UserEditPage: FunctionComponent = () => {
 
     const element = useRef<HTMLDivElement>(null);
 
-    const triggerChange = (select) => {
+    const triggerChange = (select: HTMLInputElement) => {
         const evt = document.createEvent('HTMLEvents');
         evt.initEvent('change', false, true);
         select.dispatchEvent(evt);
@@ -199,7 +199,15 @@ const UserEditPage: FunctionComponent = () => {
             toast(globalize.translate('SettingsSaved'));
         }
 
-        const saveUser = (user) => {
+        const saveUser = (user: UserDto) => {
+            if (!user.Id) {
+                throw new Error('Unexpected null user.Id');
+            }
+
+            if (!user.Policy) {
+                throw new Error('Unexpected null user.Policy');
+            }
+
             user.Name = (elem.querySelector('#txtUserName') as HTMLInputElement).value;
             user.Policy.IsAdministrator = (elem.querySelector('.chkIsAdmin') as HTMLInputElement).checked;
             user.Policy.IsHidden = (elem.querySelector('.chkIsHidden') as HTMLInputElement).checked;
@@ -236,7 +244,7 @@ const UserEditPage: FunctionComponent = () => {
             });
         };
 
-        const onSubmit = (e) => {
+        const onSubmit = (e: Event) => {
             loading.show();
             getUser().then(function (result) {
                 saveUser(result);

@@ -12,6 +12,7 @@ import SelectMaxParentalRating from '../dashboard/users/SelectMaxParentalRating'
 import SectionTabs from '../dashboard/users/SectionTabs';
 import loading from '../loading/loading';
 import toast from '../toast/toast';
+import { AccessSchedule, UserDto } from '@thornbill/jellyfin-sdk/dist/generated-client';
 
 type RatingsArr = {
     Name: string;
@@ -129,7 +130,7 @@ const UserParentalControl: FunctionComponent = () => {
         for (const btnDeleteTag of blockedTagsElem.querySelectorAll('.btnDeleteTag')) {
             btnDeleteTag.addEventListener('click', function () {
                 const tag = btnDeleteTag.getAttribute('data-tag');
-                const newTags = tags.filter(function (t) {
+                const newTags = tags.filter(function (t: string) {
                     return t != tag;
                 });
                 loadBlockedTags(newTags);
@@ -153,7 +154,7 @@ const UserParentalControl: FunctionComponent = () => {
             btnDelete.addEventListener('click', function () {
                 const index = parseInt(btnDelete.getAttribute('data-index') || '0', 10);
                 schedules.splice(index, 1);
-                const newindex = schedules.filter(function (i) {
+                const newindex = schedules.filter(function (i: number) {
                     return i != index;
                 });
                 renderAccessSchedule(newindex);
@@ -223,7 +224,15 @@ const UserParentalControl: FunctionComponent = () => {
             toast(globalize.translate('SettingsSaved'));
         };
 
-        const saveUser = (user) => {
+        const saveUser = (user: UserDto) => {
+            if (!user.Id) {
+                throw new Error('Unexpected null user.Id');
+            }
+
+            if (!user.Policy) {
+                throw new Error('Unexpected null user.Policy');
+            }
+
             user.Policy.MaxParentalRating = (elem.querySelector('.selectMaxParentalRating') as HTMLInputElement).value || null;
             user.Policy.BlockUnratedItems = Array.prototype.filter.call(elem.querySelectorAll('.chkUnratedItem'), function (i) {
                 return i.checked;
@@ -237,7 +246,7 @@ const UserParentalControl: FunctionComponent = () => {
             });
         };
 
-        const showSchedulePopup = (schedule, index) => {
+        const showSchedulePopup = (schedule: AccessSchedule, index: number) => {
             schedule = schedule || {};
             import('../../components/accessSchedule/accessSchedule').then(({default: accessschedule}) => {
                 accessschedule.show({
@@ -286,7 +295,7 @@ const UserParentalControl: FunctionComponent = () => {
             });
         };
 
-        const onSubmit = (e) => {
+        const onSubmit = (e: Event) => {
             loading.show();
             const userId = appRouter.param('userId');
             window.ApiClient.getUser(userId).then(function (result) {
