@@ -239,7 +239,7 @@ const UserEditPage: FunctionComponent = () => {
                 user.Policy.SyncPlayAccess = (elem.querySelector('#selectSyncPlayAccess') as HTMLInputElement).value as SyncPlayUserAccessType;
             }
             window.ApiClient.updateUser(user).then(function () {
-                window.ApiClient.updateUserPolicy(user.Id, user.Policy).then(function () {
+                window.ApiClient.updateUserPolicy(user.Id || '', user.Policy || {}).then(function () {
                     onSaveComplete();
                 });
             });
