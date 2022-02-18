@@ -28,7 +28,6 @@ const SearchSuggestions: FunctionComponent<SearchSuggestionsProps> = ({ serverId
     const [ suggestions, setSuggestions ] = useState<BaseItemDto[]>([]);
 
     useEffect(() => {
-        // TODO: Remove type casting once we're using a properly typed API client
         const apiClient = ServerConnections.getApiClient(serverId);
 
         apiClient.getItems(apiClient.getCurrentUserId(), {

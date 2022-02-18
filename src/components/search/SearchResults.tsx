@@ -6,7 +6,7 @@ import ServerConnections from '../ServerConnections';
 import SearchResultsRow from './SearchResultsRow';
 
 type SearchResultsProps = {
-    serverId?: string;
+    serverId: string;
     parentId?: string;
     collectionType?: string;
     query?: string;
@@ -99,8 +99,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({ serverId, parent
         setPeople([]);
 
         if (query) {
-            // TODO: Remove type casting once we're using a properly typed API client
-            const apiClient = (ServerConnections as any).getApiClient(serverId);
+            const apiClient = ServerConnections.getApiClient(serverId);
 
             // Movie libraries
             if (!collectionType || isMovies()) {
