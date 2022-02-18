@@ -233,7 +233,7 @@ const UserParentalControl: FunctionComponent = () => {
                 throw new Error('Unexpected null user.Policy');
             }
 
-            user.Policy.MaxParentalRating = (elem.querySelector('.selectMaxParentalRating') as HTMLInputElement).value || null;
+            user.Policy.MaxParentalRating = parseInt((elem.querySelector('.selectMaxParentalRating') as HTMLInputElement).value || '0', 10) || null;
             user.Policy.BlockUnratedItems = Array.prototype.filter.call(elem.querySelectorAll('.chkUnratedItem'), function (i) {
                 return i.checked;
             }).map(function (i) {
@@ -271,13 +271,13 @@ const UserParentalControl: FunctionComponent = () => {
                     StartHour: elem.getAttribute('data-start'),
                     EndHour: elem.getAttribute('data-end')
                 };
-            });
+            }) as AccessSchedule[];
         };
 
         const getBlockedTagsFromPage = () => {
             return Array.prototype.map.call(elem.querySelectorAll('.blockedTag'), function (elem) {
                 return elem.getAttribute('data-tag');
-            });
+            }) as string[];
         };
 
         const showBlockedTagPopup = () => {
