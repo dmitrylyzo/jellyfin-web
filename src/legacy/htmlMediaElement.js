@@ -7,20 +7,38 @@
 (function (HTMLMediaElement) {
     'use strict';
 
-    const HTMLMediaElement_proto = HTMLMediaElement.prototype;
-    const real_play = HTMLMediaElement_proto.play;
+    const elem = document.createElement('audio');
+    elem.classList.add('testMediaPlayerAudio');
+    elem.classList.add('hide');
 
-    HTMLMediaElement_proto.play = function () {
-        try {
-            const promise = real_play.apply(this, arguments);
+    document.body.appendChild(elem);
 
-            if (typeof promise?.then === 'function') {
-                return promise;
+    elem.volume = 1; // Volume should not be zero to trigger proper permissions
+    elem.src = 'assets/audio/silence.mp3'; // Silent sound
+
+    let playReturnsPromise = false;
+
+    try {
+        const promise = elem.play();
+        playReturnsPromise = typeof promise?.then === 'function';
+    } catch (err) {
+        console.error('HTMLMediaElement.play test failed', err);
+    }
+
+    elem.pause();
+    elem.remove();
+
+    if (!playReturnsPromise) {
+        const HTMLMediaElement_proto = HTMLMediaElement.prototype;
+        const real_play = HTMLMediaElement_proto.play;
+
+        HTMLMediaElement_proto.play = function () {
+            try {
+                real_play.apply(this, arguments);
+                return Promise.resolve();
+            } catch (err) {
+                return Promise.reject(err);
             }
-
-            return Promise.resolve();
-        } catch (err) {
-            return Promise.reject(err);
-        }
-    };
+        };
+    }
 }(HTMLMediaElement));
