@@ -1,0 +1,86 @@
+name: Build
+
+on: push
+
+jobs:
+  # build-dev:
+  #   name: Build (Development)
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Setup node environment
+  #       uses: actions/setup-node@v3.0.0
+  #       with:
+  #         node-version: 12
+  #         check-latest: true
+
+  #     - name: Get npm cache directory path
+  #       id: npm-cache-dir-path
+  #       run: echo "::set-output name=dir::$(npm config get cache)"
+
+  #     - name: Cache node_modules
+  #       uses: actions/cache@v3.0.0
+  #       id: npm-cache
+  #       with:
+  #         path: ${{ steps.npm-cache-dir-path.outputs.dir }}
+  #         key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-npm-
+
+  #     - name: Install Node.js dependencies
+  #       run: npm ci --no-audit
+  #       env:
+  #         SKIP_PREPARE: true
+
+  #     - name: Run build
+  #       run: npm run build:development
+
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: jellyfin-web-dev
+  #         path: dist
+
+  build-prod:
+    name: Build (Production)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Setup node environment
+        uses: actions/setup-node@v3.0.0
+        with:
+          node-version: 12
+          check-latest: true
+
+      - name: Get npm cache directory path
+        id: npm-cache-dir-path
+        run: echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache node_modules
+        uses: actions/cache@v3.0.0
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install Node.js dependencies
+        run: npm ci --no-audit
+        env:
+          SKIP_PREPARE: true
+
+      - name: Run build
+        run: npm run build:production
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: jellyfin-web
+          path: dist
