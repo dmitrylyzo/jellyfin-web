@@ -2344,6 +2344,7 @@ class PlaybackManager {
                     streamInfo.fullscreen = playOptions.fullscreen;
                     getPlayerData(player).isChangingStream = false;
                     return player.play(streamInfo).then(() => {
+                        if ('resetSubtitleOffset' in player) player.resetSubtitleOffset();
                         loading.hide();
                         onPlaybackStartedFn();
                         onPlaybackStarted(player, playOptions, streamInfo);
@@ -2386,6 +2387,7 @@ class PlaybackManager {
                     playerData.streamInfo = streamInfo;
 
                     return player.play(streamInfo).then(function () {
+                        if ('resetSubtitleOffset' in player) player.resetSubtitleOffset();
                         loading.hide();
                         onPlaybackStartedFn();
                         onPlaybackStarted(player, playOptions, streamInfo, mediaSource);
