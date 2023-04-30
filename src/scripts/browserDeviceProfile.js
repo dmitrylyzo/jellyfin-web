@@ -820,6 +820,12 @@ export function canPlaySecondaryAudio(videoTestElement) {
             hevcProfiles = 'main|main 10';
         }
 
+        // hevc rext
+        if (videoTestElement.canPlayType('video/mp4; codecs="hvc1.4.10.L120"').replace(/no/, '') ||
+            videoTestElement.canPlayType('video/mp4; codecs="hev1.4.10.L120"').replace(/no/, '')) {
+            hevcProfiles += '|rext';
+        }
+
         const h264VideoRangeTypes = 'SDR';
         let hevcVideoRangeTypes = 'SDR';
         let vp9VideoRangeTypes = 'SDR';
