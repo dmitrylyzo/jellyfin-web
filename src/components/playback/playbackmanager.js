@@ -3008,6 +3008,16 @@ class PlaybackManager {
             return false;
         }
 
+        /**
+         * Error code to display.
+         */
+        const DISPLAY_ERROR_CODE = {
+            'mediadecodeerror': 'NoCompatibleStream',
+            'medianotsupported': 'NoCompatibleStream',
+            'network': 'Network',
+            'servererror': 'Network'
+        };
+
         function onPlaybackError(e, error) {
             const player = this;
             error = error || {};
@@ -3043,7 +3053,7 @@ class PlaybackManager {
 
             Events.trigger(self, 'playbackerror', [errorType]);
 
-            const displayErrorCode = 'NoCompatibleStream';
+            const displayErrorCode = DISPLAY_ERROR_CODE[errorType] || 'Unknown';
             onPlaybackStopped.call(player, e, displayErrorCode);
         }
 
