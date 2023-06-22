@@ -519,6 +519,12 @@ export function canPlaySecondaryAudio(videoTestElement) {
             return (options.disableHlsVideoAudioCodecs || []).indexOf(c) === -1;
         });
 
+        const priorityAudio = ['aac', 'ac3', 'eac3'];
+
+        videoAudioCodecs = videoAudioCodecs.sort((a, b) => priorityAudio.indexOf(b) - priorityAudio.indexOf(a));
+        hlsInTsVideoAudioCodecs = hlsInTsVideoAudioCodecs.sort((a, b) => priorityAudio.indexOf(b) - priorityAudio.indexOf(a));
+        hlsInFmp4VideoAudioCodecs = hlsInFmp4VideoAudioCodecs.sort((a, b) => priorityAudio.indexOf(b) - priorityAudio.indexOf(a));
+
         const mp4VideoCodecs = [];
         const webmVideoCodecs = [];
         const hlsInTsVideoCodecs = [];
