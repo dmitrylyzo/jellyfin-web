@@ -192,6 +192,28 @@ import browser from './browser';
         return browser.tizen || browser.web0s || browser.edgeUwp || videoTestElement.canPlayType('video/mp4; codecs="vc-1"').replace(/no/, '');
     }
 
+    function supportsHdr10(options) {
+        return options.supportsHdr10 ?? (false
+                || browser.tizen
+                || browser.web0s
+                || browser.safari && ((browser.iOS && browser.iOSVersion >= 11) || browser.osx)
+                || browser.edgeChromium
+                || browser.chrome
+                || browser.firefox
+            );
+    }
+
+    function supportsHlg(options) {
+        return options.supportsHlg ?? supportsHdr10(options);
+    }
+
+    function supportsDolbyVision(options) {
+        return options.supportsDolbyVision ?? (false
+                || browser.web0s
+                || browser.safari && ((browser.iOS && browser.iOSVersion >= 13) || browser.osx)
+            );
+    }
+
     function getDirectPlayProfileForVideoContainer(container, videoAudioCodecs, videoTestElement, options) {
         let supported = false;
         let profileContainer = container;
@@ -824,23 +846,20 @@ export function canPlaySecondaryAudio(videoTestElement) {
         let vp9VideoRangeTypes = 'SDR';
         let av1VideoRangeTypes = 'SDR';
 
-        if (browser.safari && ((browser.iOS && browser.iOSVersion >= 11) || browser.osx)) {
-            hevcVideoRangeTypes += '|HDR10|HLG';
-            if ((browser.iOS && browser.iOSVersion >= 13) || browser.osx) {
-                hevcVideoRangeTypes += '|DOVI';
-            }
+        if (supportsHdr10(options)) {
+            hevcVideoRangeTypes += '|HDR10';
+            vp9VideoRangeTypes += '|HDR10';
+            av1VideoRangeTypes += '|HDR10';
         }
 
-        if (browser.tizen || browser.web0s) {
-            hevcVideoRangeTypes += '|HDR10|HLG';
-            if (browser.web0s) hevcVideoRangeTypes += '|DOVI';
-            vp9VideoRangeTypes += '|HDR10|HLG';
-            av1VideoRangeTypes += '|HDR10|HLG';
+        if (supportsHlg(options)) {
+            hevcVideoRangeTypes += '|HLG';
+            vp9VideoRangeTypes += '|HLG';
+            av1VideoRangeTypes += '|HLG';
         }
 
-        if (browser.edgeChromium || browser.chrome || browser.firefox) {
-            vp9VideoRangeTypes += '|HDR10|HLG';
-            av1VideoRangeTypes += '|HDR10|HLG';
+        if (supportsDolbyVision(options)) {
+            hevcVideoRangeTypes += '|DOVI';
         }
 
         const h264CodecProfileConditions = [
