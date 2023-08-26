@@ -68,7 +68,7 @@ function tryRemoveElement(elem) {
         }
     }
 
-    function enableNativeTrackSupport(currentSrc, track) {
+    function enableNativeTrackSupport(mediaSource, track) {
         if (track) {
             if (track.DeliveryMethod === 'Embed') {
                 return true;
@@ -76,7 +76,7 @@ function tryRemoveElement(elem) {
         }
 
         if (browser.firefox) {
-            if ((currentSrc || '').toLowerCase().includes('.m3u8')) {
+            if ((mediaSource?.TranscodingSubProtocol || mediaSource?.Container) === 'hls') {
                 return false;
             }
         }
@@ -326,10 +326,10 @@ function tryRemoveElement(elem) {
          * @private
          */
         updateVideoUrl(streamInfo) {
-            const isHls = streamInfo.url.toLowerCase().includes('.m3u8');
-
             const mediaSource = streamInfo.mediaSource;
             const item = streamInfo.item;
+
+            const isHls = (mediaSource?.TranscodingSubProtocol || mediaSource?.Container) === 'hls';
 
             // Huge hack alert. Safari doesn't seem to like if the segments aren't available right away when playback starts
             // This will start the transcoding process before actually feeding the video url into the player
@@ -476,7 +476,7 @@ function tryRemoveElement(elem) {
                 elem.crossOrigin = crossOrigin;
             }
 
-            if (enableHlsJsPlayer(options.mediaSource.RunTimeTicks, 'Video') && val.includes('.m3u8')) {
+            if (enableHlsJsPlayer(options.mediaSource.RunTimeTicks, 'Video') && (options.mediaSource.TranscodingSubProtocol || options.mediaSource.Container) === 'hls') {
                 return this.setSrcWithHlsJs(elem, options, val);
             } else if (options.playMethod !== 'Transcode' && options.mediaSource.Container === 'flv') {
                 return this.setSrcWithFlvJs(elem, options, val);
@@ -1341,7 +1341,7 @@ function tryRemoveElement(elem) {
             })[0];
 
             this.setTrackForDisplay(this.#mediaElement, track);
-            if (enableNativeTrackSupport(this.#currentSrc, track)) {
+            if (enableNativeTrackSupport(this._currentPlayOptions?.mediaSource, track)) {
                 if (streamIndex !== -1) {
                     this.setCueAppearance();
                 }
