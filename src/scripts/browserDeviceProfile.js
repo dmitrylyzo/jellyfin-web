@@ -602,6 +602,22 @@ export default function (options) {
         });
     }
 
+    if (canPlayHls() && browser.enableHls !== false) {
+        // HACK: Since there is no filter for TS/MP4 in the API, merge codecs and rely on retry after DirectPlay error
+        // FIXME: Need support for {Container: 'mp4'|'ts', Protocol: 'hls'} or {Container: 'hls', SubContainer: 'mp4'|'ts'}
+        const mergedVideoCodecs = [...hlsInTsVideoCodecs, ...hlsInFmp4VideoCodecs].filter((value, index, array) => array.indexOf(value) === index);
+        const mergedAudioCodecs = [...hlsInTsVideoAudioCodecs, ...hlsInFmp4VideoAudioCodecs].filter((value, index, array) => array.indexOf(value) === index);
+
+        if (mergedVideoCodecs.length && mergedAudioCodecs.length) {
+            profile.DirectPlayProfiles.push({
+                Container: 'hls',
+                Type: 'Video',
+                VideoCodec: mergedVideoCodecs.join(','),
+                AudioCodec: mergedAudioCodecs.join(',')
+            });
+        }
+    }
+
     // These are formats we can't test for but some devices will support
     ['m2ts', 'wmv', 'ts', 'asf', 'avi', 'mpg', 'mpeg', 'flv', '3gp', 'mts', 'trp', 'vob', 'vro', 'mov'].map(function (container) {
         return getDirectPlayProfileForVideoContainer(container, videoAudioCodecs, videoTestElement, options);
