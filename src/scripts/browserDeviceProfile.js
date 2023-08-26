@@ -628,6 +628,35 @@ export default function (options) {
         });
     }
 
+    let enableFmp4Hls = userSettings.preferFmp4HlsContainer();
+    if ((browser.safari || browser.tizen || browser.web0s) && !canPlayNativeHlsInFmp4()) {
+        enableFmp4Hls = false;
+    }
+
+    if (canPlayHls() && options.enableHls !== false) {
+        // HACK: Since there is no filter for TS/MP4 in the API, specify HLS support in general and rely on retry after DirectPlay error
+
+        if (hlsInFmp4VideoCodecs.length && hlsInFmp4VideoAudioCodecs.length && enableFmp4Hls) {
+            // FIXME: Need support for {Container: 'mp4', Protocol: 'hls'} or {Container: 'hls', SubContainer: 'mp4'}
+            profile.DirectPlayProfiles.push({
+                Container: 'hls',
+                Type: 'Video',
+                VideoCodec: hlsInFmp4VideoCodecs.join(','),
+                AudioCodec: hlsInFmp4VideoAudioCodecs.join(',')
+            });
+        }
+
+        if (hlsInTsVideoCodecs.length && hlsInTsVideoAudioCodecs.length) {
+            // FIXME: Need support for {Container: 'ts', Protocol: 'hls'} or {Container: 'hls', SubContainer: 'ts'}
+            profile.DirectPlayProfiles.push({
+                Container: 'hls',
+                Type: 'Video',
+                VideoCodec: hlsInTsVideoCodecs.join(','),
+                AudioCodec: hlsInTsVideoAudioCodecs.join(',')
+            });
+        }
+    }
+
     // These are formats we can't test for but some devices will support
     ['m2ts', 'wmv', 'ts', 'asf', 'avi', 'mpg', 'mpeg', 'flv', '3gp', 'mts', 'trp', 'vob', 'vro', 'mov'].map(function (container) {
         return getDirectPlayProfileForVideoContainer(container, videoAudioCodecs, videoTestElement, options);
@@ -713,10 +742,6 @@ export default function (options) {
     });
 
     if (canPlayHls() && options.enableHls !== false) {
-        let enableFmp4Hls = userSettings.preferFmp4HlsContainer();
-        if ((browser.safari || browser.tizen || browser.web0s) && !canPlayNativeHlsInFmp4()) {
-            enableFmp4Hls = false;
-        }
         if (hlsInFmp4VideoCodecs.length && hlsInFmp4VideoAudioCodecs.length && enableFmp4Hls) {
             profile.TranscodingProfiles.push({
                 Container: 'mp4',
