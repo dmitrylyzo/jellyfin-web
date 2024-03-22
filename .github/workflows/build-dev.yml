@@ -33,6 +33,7 @@ jobs:
       - name: Run a development build
         env:
           JELLYFIN_VERSION: ${{ github.event.pull_request.head.sha || github.sha }}
+          USE_SYSTEM_FONTS: 1
         run: npm run build:development
 
       - name: Update config.json for testing
