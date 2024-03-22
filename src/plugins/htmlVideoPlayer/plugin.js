@@ -1274,13 +1274,13 @@ export class HtmlVideoPlayer {
                     availableFonts: { 'liberation sans': `${appRouter.baseUrl()}/default.woff2` },
                     // Disabled eslint compat, but is safe as corejs3 polyfills URL
                     // eslint-disable-next-line compat/compat
-                    workerUrl: new URL('jassub/dist/jassub-worker.js', import.meta.url).href,
+                    workerUrl: new URL('jassub/dist/jassub-worker.js', import.meta.url),
                     // eslint-disable-next-line compat/compat
-                    wasmUrl: new URL('jassub/dist/jassub-worker.wasm', import.meta.url).href,
+                    wasmUrl: new URL('jassub/dist/jassub-worker.wasm', import.meta.url),
                     // eslint-disable-next-line compat/compat
-                    legacyWasmUrl: new URL('jassub/dist/jassub-worker.wasm.js', import.meta.url).href,
+                    legacyWasmUrl: new URL('jassub/dist/jassub-worker.wasm.js', import.meta.url),
                     // eslint-disable-next-line compat/compat
-                    modernWasmUrl : new URL('jassub/dist/jassub-worker-modern.wasm', import.meta.url).href,
+                    modernWasmUrl : new URL('jassub/dist/jassub-worker-modern.wasm', import.meta.url),
                     timeOffset: (this._currentPlayOptions.transcodingOffsetTicks || 0) / 10000000,
                     // new jassub options; override all, even defaults
                     blendMode: 'js',
