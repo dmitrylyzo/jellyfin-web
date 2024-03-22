@@ -215,9 +215,13 @@ export class HtmlVideoPlayer {
     /**
      * @type {any | null | undefined}
      */
-    #currentAssRenderer;
+    #currentSubtitlesOctopus;
     /**
      * @type {null | undefined}
+     */
+    #currentAssRenderer;
+    /**
+     * @type {number | undefined}
      */
     #customTrackIndex;
     /**
@@ -590,9 +594,9 @@ export class HtmlVideoPlayer {
         const offsetValue = parseFloat(offset);
 
         // if .ass currently rendering
-        if (this.#currentAssRenderer) {
+        if (this.#currentSubtitlesOctopus) {
             this.updateCurrentTrackOffset(offsetValue);
-            this.#currentAssRenderer.timeOffset = (this._currentPlayOptions.transcodingOffsetTicks || 0) / 10000000 + offsetValue;
+            this.#currentSubtitlesOctopus.timeOffset = (this._currentPlayOptions.transcodingOffsetTicks || 0) / 10000000 + offsetValue;
         } else {
             const trackElements = this.getTextTracks();
             // if .vtt currently rendering
@@ -981,8 +985,10 @@ export class HtmlVideoPlayer {
             loading.hide();
 
             seekOnPlaybackStart(this, e.target, this._currentPlayOptions.playerStartPositionTicks, () => {
-                if (this.#currentAssRenderer) {
-                    this.#currentAssRenderer.timeOffset = (this._currentPlayOptions.transcodingOffsetTicks || 0) / 10000000 + this.#currentTrackOffset;
+                if (this.#currentSubtitlesOctopus) {
+                    this.#currentSubtitlesOctopus.timeOffset = (this._currentPlayOptions.transcodingOffsetTicks || 0) / 10000000 + this.#currentTrackOffset;
+                    this.#currentSubtitlesOctopus.resize();
+                    this.#currentSubtitlesOctopus.resetRenderAheadCache(false);
                 }
             });
 
@@ -1169,9 +1175,15 @@ export class HtmlVideoPlayer {
         this.#currentClock = null;
         this._currentAspectRatio = null;
 
-        const jassub = this.#currentAssRenderer;
-        if (jassub) {
-            jassub.destroy();
+        const octopus = this.#currentSubtitlesOctopus;
+        if (octopus) {
+            octopus.dispose();
+        }
+        this.#currentSubtitlesOctopus = null;
+
+        const renderer = this.#currentAssRenderer;
+        if (renderer) {
+            renderer.setEnabled(false);
         }
         this.#currentAssRenderer = null;
     }
@@ -1260,68 +1272,59 @@ export class HtmlVideoPlayer {
         const fallbackFontList = apiClient.getUrl('/FallbackFont/Fonts', {
             api_key: apiClient.accessToken()
         });
+        const htmlVideoPlayer = this;
         const options = {
             video: videoElement,
             subUrl: getTextTrackUrl(track, item),
             fonts: avaliableFonts,
-            fallbackFont: 'liberation sans',
-            availableFonts: { 'liberation sans': `${appRouter.baseUrl()}/default.woff2` },
-            // Disabled eslint compat, but is safe as corejs3 polyfills URL
-            // eslint-disable-next-line compat/compat
-            workerUrl: new URL('jassub/dist/jassub-worker.js', import.meta.url),
-            // eslint-disable-next-line compat/compat
-            legacyWorkerUrl: new URL('jassub/dist/jassub-worker-legacy.js', import.meta.url),
+            workerUrl: `${appRouter.baseUrl()}/libraries/subtitles-octopus-worker.js`,
+            legacyWorkerUrl: `${appRouter.baseUrl()}/libraries/subtitles-octopus-worker-legacy.js`,
+            onError() {
+                // HACK: Clear JavascriptSubtitlesOctopus: it gets disposed when an error occurs
+                htmlVideoPlayer.#currentSubtitlesOctopus = null;
+
+                // HACK: Give JavascriptSubtitlesOctopus time to dispose itself
+                setTimeout(() => {
+                    onErrorInternal(htmlVideoPlayer, 'mediadecodeerror');
+                }, 0);
+            },
             timeOffset: (this._currentPlayOptions.transcodingOffsetTicks || 0) / 10000000,
-            // new jassub options; override all, even defaults
-            blendMode: 'js',
-            asyncRender: true,
-            // firefox implements offscreen canvas, but not according to spec which causes errors
-            offscreenRender: !browser.firefox,
-            // RVFC is polyfilled everywhere, but webOS 2 reports polyfill API's as functional even tho they aren't
-            onDemandRender: browser.web0sVersion !== 2,
-            useLocalFonts: true,
+
+            // new octopus options; override all, even defaults
+            renderMode: 'wasm-blend',
             dropAllAnimations: false,
             libassMemoryLimit: 40,
             libassGlyphLimit: 40,
             targetFps: 24,
             prescaleFactor: 0.8,
             prescaleHeightLimit: 1080,
-            maxRenderHeight: 2160
+            maxRenderHeight: 2160,
+            resizeVariation: 0.2,
+            renderAhead: 90
         };
-            // TODO: replace with `event-target-polyfill` once https://github.com/benlesh/event-target-polyfill/pull/12 or 11 is merged
-        import('event-target-polyfill').then(() => {
-            import('jassub').then(({ default: JASSUB }) => {
-                Promise.all([
-                    apiClient.getNamedConfiguration('encoding'),
-                    // Worker in Tizen 5 doesn't resolve relative path with async request
-                    resolveUrl(options.workerUrl),
-                    resolveUrl(options.legacyWorkerUrl)
-                ]).then(([config, workerUrl, legacyWorkerUrl]) => {
-                    options.workerUrl = workerUrl;
-                    options.legacyWorkerUrl = legacyWorkerUrl;
+        import('@jellyfin/libass-wasm').then(({ default: SubtitlesOctopus }) => {
+            Promise.all([
+                apiClient.getNamedConfiguration('encoding'),
+                // Worker in Tizen 5 doesn't resolve relative path with async request
+                resolveUrl(options.workerUrl),
+                resolveUrl(options.legacyWorkerUrl)
+            ]).then(([config, workerUrl, legacyWorkerUrl]) => {
+                options.workerUrl = workerUrl;
+                options.legacyWorkerUrl = legacyWorkerUrl;
 
-                    const cleanup = () => {
-                        this.#currentAssRenderer.destroy();
-                        this.#currentAssRenderer = null;
-                        onErrorInternal(this, 'mediadecodeerror');
-                    };
-
-                    if (config.EnableFallbackFont) {
-                        apiClient.getJSON(fallbackFontList).then((fontFiles = []) => {
-                            fontFiles.forEach(font => {
-                                const fontUrl = apiClient.getUrl(`/FallbackFont/Fonts/${font.Name}`, {
-                                    api_key: apiClient.accessToken()
-                                });
-                                avaliableFonts.push(fontUrl);
+                if (config.EnableFallbackFont) {
+                    apiClient.getJSON(fallbackFontList).then((fontFiles = []) => {
+                        fontFiles.forEach(font => {
+                            const fontUrl = apiClient.getUrl(`/FallbackFont/Fonts/${font.Name}`, {
+                                api_key: apiClient.accessToken()
                             });
-                            this.#currentAssRenderer = new JASSUB(options);
-                            this.#currentAssRenderer.addEventListener('error', cleanup, { once: true });
+                            avaliableFonts.push(fontUrl);
                         });
-                    } else {
-                        this.#currentAssRenderer = new JASSUB(options);
-                        this.#currentAssRenderer.addEventListener('error', cleanup, { once: true });
-                    }
-                });
+                        this.#currentSubtitlesOctopus = new SubtitlesOctopus(options);
+                    });
+                } else {
+                    this.#currentSubtitlesOctopus = new SubtitlesOctopus(options);
+                }
             });
         });
     }
