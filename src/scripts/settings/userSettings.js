@@ -250,6 +250,19 @@ export class UserSettings {
     }
 
     /**
+     * Get or set 'Enable smooth scroll' state.
+     * @param {boolean|undefined} val - Flag to enable 'Enable smooth scroll' or undefined.
+     * @return {boolean} 'Enable smooth scroll' state.
+     */
+    enableSmoothScroll(val) {
+        if (val !== undefined) {
+            return this.set('enableSmoothScroll', val.toString(), false);
+        }
+
+        return toBoolean(this.get('enableSmoothScroll', false), !!browser.tizen);
+    }
+
+    /**
      * Get or set 'Backdrops' state.
      * @param {boolean|undefined} val - Flag to enable 'Backdrops' or undefined.
      * @return {boolean} 'Backdrops' state.
@@ -648,6 +661,7 @@ export const enableThemeVideos = currentSettings.enableThemeVideos.bind(currentS
 export const enableFastFadein = currentSettings.enableFastFadein.bind(currentSettings);
 export const enableBlurhash = currentSettings.enableBlurhash.bind(currentSettings);
 export const enableBackdrops = currentSettings.enableBackdrops.bind(currentSettings);
+export const enableSmoothScroll = currentSettings.enableSmoothScroll.bind(currentSettings);
 export const detailsBanner = currentSettings.detailsBanner.bind(currentSettings);
 export const useEpisodeImagesInNextUpAndResume = currentSettings.useEpisodeImagesInNextUpAndResume.bind(currentSettings);
 export const language = currentSettings.language.bind(currentSettings);

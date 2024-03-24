@@ -102,6 +102,8 @@ function loadForm(context, user, userSettings) {
         context.querySelector('.fldDateTimeLocale').classList.add('hide');
     }
 
+    context.querySelector('.smoothScrollContainer').classList.toggle('hide', !layoutManager.tv);
+
     fillThemes(context.querySelector('#selectTheme'), userSettings.theme());
     fillThemes(context.querySelector('#selectDashboardTheme'), userSettings.dashboardTheme());
 
@@ -131,6 +133,8 @@ function loadForm(context, user, userSettings) {
     context.querySelector('#chkUseEpisodeImagesInNextUp').checked = userSettings.useEpisodeImagesInNextUpAndResume();
 
     context.querySelector('.selectLayout').value = layoutManager.getSavedLayout() || '';
+
+    context.querySelector('#chkSmoothScroll').checked = userSettings.enableSmoothScroll();
 
     showOrHideMissingEpisodesField(context);
 
@@ -166,6 +170,8 @@ function saveUser(context, user, userSettingsInstance, apiClient) {
 
     userSettingsInstance.disableCustomCss(context.querySelector('#chkDisableCustomCss').checked);
     userSettingsInstance.customCss(context.querySelector('#txtLocalCustomCss').value);
+
+    userSettingsInstance.enableSmoothScroll(context.querySelector('#chkSmoothScroll').checked);
 
     if (user.Id === apiClient.getCurrentUserId()) {
         skinManager.setTheme(userSettingsInstance.theme());
