@@ -2476,16 +2476,26 @@ export class PlaybackManager {
                 prevRelIndex += 1;
             }
 
+            const prevLanguage = prevStream.Language || 'und';
+
             let newRelIndex = 0;
             for (const stream of mediaStreams) {
                 if (stream.Type != streamType) continue;
+
+                // Don't change Forced/non-Forced
+                if (stream.IsForced != prevStream.IsForced) continue;
+
+                const language = stream.Language || 'und';
+
+                // Don't change language
+                if (language != 'und' && prevLanguage != 'und' && language != prevLanguage) continue;
 
                 let score = 0;
 
                 if (prevStream.Codec == stream.Codec) score += 1;
                 if (prevRelIndex == newRelIndex) score += 1;
                 if (prevStream.DisplayTitle && prevStream.DisplayTitle == stream.DisplayTitle) score += 2;
-                if (prevStream.Language && prevStream.Language != 'und' && prevStream.Language == stream.Language) score += 2;
+                if (prevLanguage != 'und' && prevLanguage == language) score += 2;
 
                 console.debug(`AutoSet ${streamType} - Score ${score} for ${stream.Index} - ${stream.DisplayTitle}`);
                 if (score > bestStreamScore && score >= 3) {
