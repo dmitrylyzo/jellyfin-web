@@ -326,7 +326,18 @@ export default function (view) {
         elem.removeEventListener(transitionEndEventName, onHideAnimationComplete);
     }
 
-    const _focus = debounce((focusElement) => focusManager.focus(focusElement), 50);
+    const _focus = debounce((focusElement) => {
+        // If no focus element is provided, try to keep current focus if it's valid,
+        // otherwise default to pause button
+        if (!focusElement) {
+            const currentFocus = document.activeElement;
+            if (!currentFocus || !focusManager.isCurrentlyFocusable(currentFocus)) {
+                focusElement = osdBottomElement.querySelector('.btnPause');
+            }
+        }
+
+        if (focusElement) focusManager.focus(focusElement);
+    }, 50);
 
     function showMainOsdControls(focusElement) {
         if (!currentVisibleMenu) {
@@ -336,23 +347,12 @@ export default function (view) {
             elem.classList.remove('hide');
             elem.classList.remove('videoOsdBottom-hidden');
 
-            focusElement ||= elem.querySelector('.btnPause');
-
             if (!layoutManager.mobile) {
                 _focus(focusElement);
             }
             toggleSubtitleSync();
         } else if (currentVisibleMenu === 'osd' && !layoutManager.mobile) {
-            // If no focus element is provided, try to keep current focus if it's valid,
-            // otherwise default to pause button
-            if (!focusElement) {
-                const currentFocus = document.activeElement;
-                if (!currentFocus || !focusManager.isCurrentlyFocusable(currentFocus)) {
-                    focusElement = osdBottomElement.querySelector('.btnPause');
-                }
-            }
-
-            if (focusElement) _focus(focusElement);
+            _focus(focusElement);
         }
     }
 
