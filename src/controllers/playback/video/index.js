@@ -326,7 +326,11 @@ export default function (view) {
         elem.removeEventListener(transitionEndEventName, onHideAnimationComplete);
     }
 
-    const _focus = debounce((focusElement) => focusManager.focus(focusElement), 50);
+    let _nextFocusElement = null;
+    const _focus = debounce((focusElement) => {
+        focusManager.focus(focusElement);
+        _nextFocusElement = null;
+    }, 50);
 
     function showMainOsdControls(focusElement) {
         if (!currentVisibleMenu) {
@@ -339,20 +343,20 @@ export default function (view) {
             focusElement ||= elem.querySelector('.btnPause');
 
             if (!layoutManager.mobile) {
-                _focus(focusElement);
+                _focus(_nextFocusElement = focusElement);
             }
             toggleSubtitleSync();
         } else if (currentVisibleMenu === 'osd' && !layoutManager.mobile) {
             // If no focus element is provided, try to keep current focus if it's valid,
             // otherwise default to pause button
             if (!focusElement) {
-                const currentFocus = document.activeElement;
+                const currentFocus = _nextFocusElement || document.activeElement;
                 if (!currentFocus || !focusManager.isCurrentlyFocusable(currentFocus)) {
                     focusElement = osdBottomElement.querySelector('.btnPause');
                 }
             }
 
-            if (focusElement) _focus(focusElement);
+            if (focusElement) _focus(_nextFocusElement = focusElement);
         }
     }
 
