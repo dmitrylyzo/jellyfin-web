@@ -304,6 +304,9 @@ if (browser.web0s) {
     // UserAgent string contains 'Chrome' and 'Safari', but we only want 'tizen' to be true
     delete browser.chrome;
     delete browser.safari;
+} else if (browser.vidaa) {
+    const v = /VIDAA\/(\d+).(\d+)/.exec(userAgent);
+    browser.vidaaVersion = parseInt(v[1], 10) + parseInt(v[2], 10) / 10;
 } else {
     browser.orsay = userAgent.toLowerCase().indexOf('smarthub') !== -1;
 }
